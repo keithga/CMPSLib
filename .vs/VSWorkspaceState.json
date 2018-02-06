@@ -1,11 +1,14 @@
 {
   "ExpandedNodes": [
     "",
+    "\\BusinessQueries",
+    "\\BusinessRules",
     "\\Collections",
     "\\Common",
     "\\SQLQuery",
-    "\\Tests"
+    "\\Tests",
+    "\\Wizards"
   ],
-  "SelectedNode": "\\ToDo.md",
+  "SelectedNode": "\\BusinessQueries",
   "PreviewInSolutionExplorer": false
 }

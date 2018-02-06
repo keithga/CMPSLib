@@ -26,7 +26,7 @@ $ModuleCommon = @{
     Copyright = "Copyright Keith Garner (KeithGa@DeploymentLive.com), all Rights Reserved."
     ModuleVersion = ("1.1." + (get-date -Format "yyMM.ddHH"))
     PowershellVersion = "2.0"
-    Description = "DeployShared Powershell Library"
+    Description = "ConfigMgr Powershell Library"
     GUID = [GUID]::NewGUID()
 }
 
@@ -34,7 +34,7 @@ Foreach ( $libPath in get-childitem -path $PSScriptRoot -Directory )
 {
     Write-Verbose "if not exist $($libPath.FullName)\*.psm1, then create"
 
-    $ImportDirectories = get-childitem -Directory -path .\DeployShared |
+    $ImportDirectories = get-childitem -Directory -path .\PSCMLib |
         Where-Object { test-path  "$($_.fullname)\*.ps1" } | 
         ForEach-Object { "`$PSScriptRoot\$($_.Name)" }
 
