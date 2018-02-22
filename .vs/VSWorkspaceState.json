@@ -3,12 +3,14 @@
     "",
     "\\BusinessQueries",
     "\\BusinessRules",
-    "\\Collections",
-    "\\Common",
-    "\\SQLQuery",
-    "\\Tests",
-    "\\Wizards"
+    "\\PSCMLib",
+    "\\PSCMLib\\BusinessRules",
+    "\\PSCMLib\\Collections",
+    "\\PSCMLib\\Common",
+    "\\PSCMLib\\SQLQuery",
+    "\\PSCMLib\\Wizards",
+    "\\Tests"
   ],
-  "SelectedNode": "\\BusinessQueries",
+  "SelectedNode": "\\PSCMLib\\Wizards\\Add-CMItemsToStart.ps1",
   "PreviewInSolutionExplorer": false
 }

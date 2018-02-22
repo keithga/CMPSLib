@@ -3,7 +3,7 @@ Function Invoke-SQLCMD {
     <#
     Exmaple 
 
-    Invoke-SQLCmd -HostName CM1 -Database 'ConfigMgr_CHQ' -SQLQuery 'SELECT CollectionID,SIteID,CollectionName FROM [dbo].[Collections] WHERE CollectionType = 2'
+    Invoke-SQLCmd -HostName 'tcp:CM1' -Database 'ConfigMgr_CHQ' -SQLQuery 'SELECT CollectionID,SIteID,CollectionName FROM [dbo].[Collections] WHERE CollectionType = 2'
 
     #>
     [cmdletbinding()]
@@ -18,7 +18,7 @@ Function Invoke-SQLCMD {
     )
 
     $SqlConnection = New-Object System.Data.SqlClient.SqlConnection
-    $SqlConnection.ConnectionString = "Server=$SCCMServer;database=$Database;Integrated Security=True;"
+    $SqlConnection.ConnectionString = "Server=$HostName;database=$Database;Integrated Security=True;"
     $SqlConnection.Open()
 
     if ( $SqlConnection.State -ne 'Open' ) {
