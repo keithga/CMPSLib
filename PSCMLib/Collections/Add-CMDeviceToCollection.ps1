@@ -65,13 +65,14 @@ Function Add-CMDeviceToCollection {
 
     begin {               
         $WmiArgs = @{ NameSpace = "root\SMS\Site_$SiteCode"}
-        $CollectionCount = [pscustomObject]@{'OldCount'a=$null;'NewCount'=$null}
+
+        $CollectionCount = [pscustomObject]@{'OldCount'=$null;'NewCount'=$null}
 
         if ($PSBoundParameters.ContainsKey('CollectionID')){
             $WMIArgs.Add('Filter', "CollectionID = '$CollectionID' and CollectionType='2'")
         }
         
-        if ($PSBoundParameters.ContainsKey('CollectionName')){{
+        if ($PSBoundParameters.ContainsKey('CollectionName')){
             $WMIArgs.Add('Filter', "CollectionName = '$CollectionName' and CollectionType='2'")
         }
         
@@ -80,7 +81,7 @@ Function Add-CMDeviceToCollection {
         }
 
         if ($PSBoundParameters.ContainsKey('Credential')){
-            $WmiArgs.Add(Credential, $Credential)
+            $WmiArgs.Add('Credential', $Credential)
             Write-Verbose "Will be using $($Credential.UserName) for this connection"
         }
         write-debug "test param build out here"
