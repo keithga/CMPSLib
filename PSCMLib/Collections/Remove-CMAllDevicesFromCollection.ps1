@@ -6,9 +6,19 @@ Function Remove-CMAllDevicesFromCollection {
 
     [CmdLetBinding()]
     Param(
-        [string]   $CollectionName
+        [Parameter(Mandatory=$true, Position=0, ParameterSetName='CollNameSet')]
+        [ValidateNotNull()]
+        [ValidateNotNullOrEmpty()]
+        [Alias('Name')] 
+        [string]    $CollectionName,
+
+        [Parameter(Mandatory=$true, Position=0, ParameterSetName='CollIDSet')]
+        [ValidateNotNull()]
+        [ValidateNotNullOrEmpty()]
+        [Alias('ID')] 
+        [string]    $CollectionID
+
     )
 
-    Get-CMDevice -CollectionName $CollectionName | 
-        Remove-CMResourceFromCollection -CollectionName $CollectionName
+    Get-CMDevice @PSBoundParameters | Remove-CMResourceFromCollection @PSBoundParameters
 }

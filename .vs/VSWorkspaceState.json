@@ -11,6 +11,6 @@
     "\\PSCMLib\\Wizards",
     "\\Tests"
   ],
-  "SelectedNode": "\\PSCMLib\\Wizards\\Add-CMItemsToStart.ps1",
+  "SelectedNode": "\\PSCMLib\\Collections\\Remove-CMResourceFromCollection.ps1",
   "PreviewInSolutionExplorer": false
 }

@@ -30,7 +30,7 @@ $ModuleCommon = @{
     GUID = [GUID]::NewGUID()
 }
 
-Foreach ( $libPath in get-childitem -path $PSScriptRoot -Directory )
+Foreach ( $libPath in get-childitem -path $PSScriptRoot -Directory -include *lib* )
 {
     Write-Verbose "if not exist $($libPath.FullName)\*.psm1, then create"
 
