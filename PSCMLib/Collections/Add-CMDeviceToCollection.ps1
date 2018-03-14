@@ -83,6 +83,7 @@ Function Add-CMDeviceToCollection {
         $MemberCount.Get()
         Write-Verbose "$Filter direct membership rule count: $($MemberCount.CollectionRules.Count)"
         $FoundList = $MemberCount.CollectionRules.ResourceID
+        if ( $PassThru ) { $MemberCount | Write-Output }
 
     }
     process {
@@ -105,8 +106,8 @@ Function Add-CMDeviceToCollection {
         $CollectionQuery.RequestRefresh() | out-string -Width 200 | write-verbose
 
         if ( $VerbosePreference -eq 'continue' -or $PassThru ) {
+            start-sleep -Seconds 2 # flush
             $MemberCount = Get-WmiObject @WMIArgs -Class SMS_Collection -ErrorAction Stop -Filter $Filter
-            start-sleep -Seconds 1  # flush
             $MemberCount.Get()
             Write-Verbose "$Filter direct membership rule count: $($MemberCount.CollectionRules.Count)"
             if ( $PassThru ) { $MemberCount | Write-Output }

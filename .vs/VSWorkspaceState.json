@@ -1,14 +1,14 @@
 {
   "ExpandedNodes": [
     "",
+    "\\BusinessActions",
     "\\BusinessQueries",
-    "\\BusinessRules",
     "\\PSCMLib",
     "\\PSCMLib\\BusinessRules",
     "\\PSCMLib\\Collections",
     "\\PSCMLib\\Common",
     "\\PSCMLib\\SQLQuery",
-    "\\PSCMLib\\Wizards",
+    "\\Setup",
     "\\Tests"
   ],
   "SelectedNode": "\\PSCMLib\\Collections\\Remove-CMResourceFromCollection.ps1",

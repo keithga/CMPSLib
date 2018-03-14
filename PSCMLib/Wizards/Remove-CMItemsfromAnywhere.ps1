@@ -1,4 +1,4 @@
-function Add-CMItemsToStart {
+function Remove-CMItemsfromAnywhere {
 
     [cmdletbinding(DefaultParametersetname="Computer")]
     param(
@@ -11,12 +11,18 @@ function Add-CMItemsToStart {
         [parameter(Mandatory=$false, Position=0, ParameterSetName="Collection")]
         [string]    $Collection,
 
-        [parameter(Mandatory=$true, ParameterSetName="File")]
-        [parameter(Mandatory=$true, ParameterSetName="Computer")]
-        [parameter(Mandatory=$true, ParameterSetName="Collection")]
-        [string]    $Target
+        [string]   $SourceFilter = 'OSD_W10_Fall*'
 
     )
+
+    <#
+
+    There may be times when we will need to remove a computer or computers from the entire process. 
+
+    This wizard is really only for internal use, individual business groups won't have access to remove direct memberships from all collections.
+
+    #>
+
 
     #region Support routines
 
@@ -46,9 +52,9 @@ Welcome to the Windows In-Place Upgrade Import Wizard.
 
 This program will assist in adding Computers for Windows 10 In-Place Upgrade process.
 
-    Destination: [$Target]
+    Serarch Parameters: [$SourceFilter]
 
-If this is not your approved Target Collection, exit now.
+This operation is for CM ADMINS only.
 
 
 
@@ -71,6 +77,8 @@ If this is not your approved Target Collection, exit now.
             throw "Unable to locate Local ConfigMgr Provider"
         }
     }
+
+    $WMIArgs = Get-CMSiteForWMI
 
     ############################
 
@@ -198,12 +206,25 @@ Start the installation from an existing collection
     Write-Host "`r`nFound Systems  (Count: $($Systems.Count)):"
     $Systems |  Select-Object -Property ResourceID,Name,SiteCode,ResourceType | Out-GridView
 
-    Write-Host "`r`nTarget [$target]:"
-    $tgtColl = Get-CMCollection -Name $Target -collectionType Device
-    if ( -not $tgtColl ) {
-        throw "Missing Target Collection $Target"
+    #########################
+    Write-Host "`r`nSearch [$SourceFilter]:"
+
+
+    $CollectionMembershipQuery = "SELECT SMS_Collection.*,SMS_FullCollectionMembership.* FROM SMS_FullCollectionMembership, SMS_Collection where ResourceID = '{0}' and SMS_Collection.name LIKE 'OSD_W10_%' and SMS_FullCollectionMembership.CollectionID = SMS_Collection.CollectionID"
+
+    $Found = $Systems | %{ gwmi @wmiargs -query ( $CollectionMembershipQuery -f $_.ResourceID )  } | 
+        %{ [pscustomobject] @{
+            Name = $_.SMS_FullCollectionMembership.Name
+            ResourceID   = $_.SMS_FullCollectionMembership.ResourceID
+            CollectionName = $_.SMS_COllection.Name
+            CollectionID   = $_.SMS_COllection.CollectionID
+        }} # | group-object -Property COllectionID
+
+    if ( -not $Found ) {
+        throw "Did not find any items"
     }
-    $tgtColl | Select-Object -Property CollectionID,Name,LocalMemberCount,LimitToCollectionID,LimitToCollectionName | out-gridview
+
+    $Found | Out-GridView
 
     Write-Host "`r`nVerify and continue"
 
@@ -213,19 +234,17 @@ Start the installation from an existing collection
 
     #region Procesing
 
+
     $host.ui.RawUI.WindowTitle = "Working..."
 
     Write-Host "working..."
 
     # XXX TBD - Future: use $SiteCode, $COmputerName and $Credential to connect to remote machines. Skip for now
 
-    $results = $Systems | Add-CMDeviceToCollection -CollectionName $Target -passThru
-
-    $Count = 'Unknown'
-    if ( $Results.count -eq 2 ) {
-        $results | Out-String -Width 200 | Write-Verbose
-        $Count = $Results[1].CollectionRules.Count - $Results[0].CollectionRules.Count
-    }
+    $Found | Group-Object -Property CollectionID | 
+        ForEach-Object {
+            $_.Group | Remove-CMResourceFromCollection -CollectionID $_.Name
+        }
 
     Write-Host @"
 
@@ -237,12 +256,8 @@ Start the installation from an existing collection
 
     Finished
 
-    Was Count: $($Results[0].CollectionRules.Count)
-
-    Now Count: $($Results[1].CollectionRules.Count)
-
 "@
-
+ 
     Wait-ForUserConfirmation
 
     #endregion

@@ -1,31 +1,40 @@
+ï»¿# Ready
+
+## Wizards
+### Add Device to Collection
+### Remove Device from Process
+
 # ToDo
 
 Things that should be done for the final system:
 
-Wizards for:
+## FUnctions
 
-Reports for:
-* Computers within the process...
+### MOve from Anywhere to $Target
 
-Process Flow...
+## Wizards
 
+### Move Device from Collection to Collection
 
-UI Wizards for:
-o	Adding in computers to Ready for Pre-Assessment
-  * From Text file
-  * Single Computer
-  * From reference Collection
-o	Moving machines from “Ready For Scheduling” to “Day XX”
-  * First XXx
-  * Single Machine
-  * inner joined with another gorup.
-o	Remove machines from process “Exit”
-o	Remove failed machines from “Day XX” to “?????”
-?	Option: Move to The Next Day
-?	Option: Move to “Ready for Scheduling”
-?	Option: Move to “Error State/On Hold”
-?	Option: Move out (Abort)
+* Move machines from "Ready for Scheduling" to "Day XX"
 
-Ready For scheduling SDS
-Ready For scheduling STO
-Ready For scheduling WFA
+* Move from anywhere to "Ready for PreAssessment" or "Ready for Scheduling" (Reset)
+- First XXX
+- Single Machine
+- Inner joined with another limiting group?
+
+* Move from "Day XX" to "Finished" ??? Necessary?!?!
+
+* Move from "Day XX" to "Day XX+1"
+
+## Back end Process
+
+Moving allong
+
+## Reporting
+
+TBD
+
+## Error Handling
+
+TBD
