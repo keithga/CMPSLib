@@ -2,7 +2,8 @@
 param(
     $TargetZipPath = "$env:temp\ps2wiz",
     $TargetZipFile = "$env:temp\ps2wiz.zip",
-    $targets = @('ENG','OPS','SEC')
+    $targets = @('ENG','OPS','SEC'),
+    $Season = 'Fall'
 )
 
 <#
@@ -57,7 +58,7 @@ foreach ( $Target in $Targets ) {
 
 :: Batch script to call wizard for type $Target
 
-"%~dps0\..\Bin\PowerShell Wizard Host.exe" "(import-module '%~dps0\..\PSCMLib');(add-cmitemstostart -Target 'OSD_W10_Fall_Ready_for_PreAssessment_$($Target)' -InputFile '%~f1' )"
+"%~dps0\..\Bin\PowerShell Wizard Host.exe" "(import-module '%~dps0\..\PSCMLib');(add-cmitemstostart -Target '$(Format-WAASPreAssessGroup -Season $Season -Group $Target)' -InputFile '%~f1' )"
 "@ | Out-File -Encoding ascii -Force "$PSscriptRoot\..\BusinessActions\Import_Ready_For_PreAssessment_$Target.cmd"
 
 }
@@ -69,7 +70,7 @@ foreach ( $Target in $Targets ) {
 
 :: Batch script to call wizard for type Remove
 
-"%~dps0\..\Bin\PowerShell Wizard Host.exe" "(import-module '%~dps0\..\PSCMLib');(Remove-CMItemsfromAnywhere -SourceFilter 'OSD_W10_Fall_*' -InputFile '%~f1' )"
+"%~dps0\..\Bin\PowerShell Wizard Host.exe" "(import-module '%~dps0\..\PSCMLib');(Remove-CMItemsfromAnywhere -SourceFilter '$($OSDW10Prefix)_*' -InputFile '%~f1' )"
 "@ | Out-File -Encoding ascii -Force "$PSscriptRoot\..\BusinessActions\Remove_System_From_Anywhere_ADMINONLY.cmd"
 
 

@@ -10,9 +10,9 @@ param(
 
 #region Rule - Move Business Group Ready For PreAssessment to PreAssessment
 
-foreach ( $Collection in Get-CMCollection -CollectionType Device -Name 'OSD_W10_*_Ready_for_PreAssessment' | % Name ) { 
+foreach ( $Collection in Get-CMCollection -CollectionType Device -Name (Format-WAASStdName -Season '*' -name 'Ready_for_PreAssessment') | % Name ) { 
 
-    # Get the base name of the Collection, and 
+    # Get the base name of the Collection from  'OSD_W10_*_Ready_for_PreAssessment' and move to PreAssessment
     $PreAssess = $Collection | Get-CMCollectionBusinessName -postFix 'PreAssessment'
     Get-CMDevice -CollectionName $Collection | 
         Move-CMDeviceToCollection -FromCollectionName $Collection -ToCollectionName $PreAssess
@@ -39,17 +39,14 @@ FROM LastKnownStatus LKS
 JOIN [dbo].[v_Advertisement] adv on adv.AdvertisementID = LKS.AdvertisementID
 JOIN [dbo].[v_collection] col on adv.CollectionID = col.CollectionID
 WHERE rn = 1 AND ExecutionTime > DATEADD(Day, -40, getdate()) 
-    AND col.Name LIKE 'OSD_W10_{0}_Precache_Compat_Scan'
+    AND col.Name LIKE '$($OSDW10Prefix)_%_Precache_Compat_Scan'
     AND LKS.LastStatusMessageID = 11143
 "@
 
-foreach ( $Group in 'Fall_x64','Spring_x64') {
-
-    Write-Verbose ("Process OSD_W10_{0}_Precache_Compat_Scan to OSD_W10_{0}_Ready_For_Scheduling" -f $Group)
-    Invoke-SQLCMD @PSBoundParameters -Query $Query -args $Group | 
-        Move-CMDeviceToCollection -FromCollectionName ('OSD_W10_{0}_Precache_Compat_Scan' -f $Group) -ToCollectionName ('OSD_W10_{0}_Ready_For_Scheduling' -f $Group)
-
-}
+Write-Verbose ("Process OSD_W10_%_Precache_Compat_Scan to OSD_W10_{0}_Ready_For_Scheduling" -f $Group)
+Invoke-SQLCMD @PSBoundParameters -Query $Query |
+    # BUGBUG - Need to group and move via group, fix up target.
+    Move-CMDeviceToCollection -FromCollectionName ('OSD_W10_{0}_Precache_Compat_Scan' -f $Group) -ToCollectionName ('OSD_W10_{0}_Ready_For_Scheduling' -f $Group)
 
 #endregion
 
@@ -72,19 +69,16 @@ FROM LastKnownStatus LKS
 JOIN [dbo].[v_Advertisement] adv on adv.AdvertisementID = LKS.AdvertisementID
 JOIN [dbo].[v_collection] col on adv.CollectionID = col.CollectionID
 WHERE rn = 1 AND ExecutionTime > DATEADD(Day, -40, getdate()) 
-    AND col.Name LIKE 'OSD_W10_{0}_Day_%'
+    AND col.Name LIKE '$($OSDW10Prefix)_%_Day_%'
     AND LKS.LastStatusMessageID = 11143
 "@
 
-foreach ( $Group in 'Fall_x64','Spring_x64') {
+Write-Verbose ("Process OSD_W10_%_DAY_XX_PM to OSD_W10_%_Finished" -f $Group)
+Invoke-SQLCMD @PSBoundParameters -Query $Query | 
+    # BUGBUG - XXX - FIx up target
+    Move-CMDeviceToCollection -FromCollectionName ('OSD_W10_{0}_DAY_XXXBADBADBAD!!!' -f $Group) -ToCollectionName ('OSD_W10_{0}_Finished' -f $Group)
 
-    Write-Verbose ("Process OSD_W10_{0}_DAY_XX_PM to OSD_W10_{0}_Finished" -f $Group)
-    Invoke-SQLCMD @PSBoundParameters -Query $Query -args $Group | 
-        Move-CMDeviceToCollection -FromCollectionName ('OSD_W10_{0}_DAY_XXXBADBADBAD!!!' -f $Group) -ToCollectionName ('OSD_W10_{0}_Finished' -f $Group)
-
-    # TBD, need to group the Collection names, so we can move them from the right date
-
-}
+# TBD, need to group the Collection names, so we can move them from the right date
 
 #endregion
 

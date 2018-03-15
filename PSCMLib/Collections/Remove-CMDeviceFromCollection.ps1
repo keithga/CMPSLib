@@ -1,5 +1,5 @@
 
-Function Remove-CMResourceFromCollection {
+Function Remove-CMDeviceFromCollection {
     <#
     .SYNOPSIS
     Removes many members to a CM Collection with only one call

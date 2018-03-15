@@ -16,6 +16,8 @@ C:\Users\keith\source\repos\CMPSLib\Tests\Create-TestCollections.ps1  -environme
 To print this list: 
 .\Create-TestCollections.ps1 -printonly -seasons @('Fall') -environments @('') | sort
 
+Get-CMCollection -name osd_w10* | % Name | sort
+
 OSD_W10_Fall_Ready_for_PreAssessment_ENG
 OSD_W10_Fall_Ready_for_PreAssessment_OPS
 OSD_W10_Fall_Ready_for_PreAssessment_SEC
@@ -72,10 +74,15 @@ OSD_W10_Fall_NonCompliant_OSVer
 
 $List = @()
 
-#######
+$ErrorActionPreference = 'stop'
 
-if(-not (Get-Module ConfigurationManager)) { Import-Module "$($ENV:SMS_ADMIN_UI_PATH)\..\ConfigurationManager.psd1" }
-if (get-location | ? Provider -notlike '*CMSite') { get-PSDrive -PSProvider CMSite | Select -First 1 | %{ Push-Location "$($_)`:" -StackName CM } }
+if(-not (Get-Module PSCMLib)) { Import-Module "$PSScriptRoot\..\PSCMLib" }
+
+#######
+if ( -not $PrintOnly ) {
+    if(-not (Get-Module ConfigurationManager)) { Import-Module "$($ENV:SMS_ADMIN_UI_PATH)\..\ConfigurationManager.psd1" }
+    if (get-location | ? Provider -notlike '*CMSite') { get-PSDrive -PSProvider CMSite | Select -First 1 | %{ Push-Location "$($_)`:" -StackName CM } }
+}
 
 #######
 
@@ -86,20 +93,25 @@ Foreach ( $Season in $seasons ) {
     Foreach ( $Environment in $environments ) {
 
         Foreach ( $Day in 1..31 ) {
-            $List += 'OSD_W10{0}_{1}_Day_{2:d2}_PM' -f $Environment,$Season,$Day
+            # 'OSD_W10{0}_{1}_Day_{2:d2}_PM' -f $Environment,$Season,$Day
+            $List += Format-WAASStdDay -EnvName $environment -Season $Season -Day $Day
         }
 
-        Foreach ( $Operation in 'Preassessment','Precache_Compat_Scan','Finished','Ready_For_Scheduling' ) {
-            $List += 'OSD_W10{0}_{1}_{2}' -f $Environment,$Season,$Operation
+        Foreach ( $Operation in (get-EnumOSDOperations) ) {
+            # 'OSD_W10{0}_{1}_{2}' -f $Environment,$Season,$Operation 
+            $List += Format-WAASStdName -EnvName $environment -Season $Season -Name $Operation
         }
 
         Foreach ( $BusinessUnit in $BusinessUnits ) {
-            $List += 'OSD_W10{0}_{1}_Ready_for_PreAssessment_{2}' -f $Environment,$Season,$BusinessUnit
-            $List += 'OSD_W10{0}_{1}_Ready_for_Scheduling_{2}' -f $Environment,$Season,$BusinessUnit
+            # 'OSD_W10{0}_{1}_Ready_for_PreAssessment_{2}' -f $Environment,$Season,$BusinessUnit
+            $List += Format-WAASPreAssessGroup -EnvName $environment -Season $Season -Group $BUsinessUnit
+            # 'OSD_W10{0}_{1}_Ready_for_Scheduling_{2}' -f $Environment,$Season,$BusinessUnit
+            $List += Format-WAASScheduling -EnvName $environment -Season $Season -Group $BUsinessUnit
         }
 
         foreach ( $Error in $Errors ) { 
-            $List += 'OSD_W10{0}_{1}_NonCompliant_{2}' -f $Environment,$Season,$Error
+            # $List += 'OSD_W10{0}_{1}_NonCompliant_{2}' -f $Environment,$Season,$Error
+            $List += Format-WAASStdErr -EnvName $environment -Season $Season -Err $Error
         }
 
     }

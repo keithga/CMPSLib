@@ -198,12 +198,13 @@ Start the installation from an existing collection
     Write-Host "`r`nFound Systems  (Count: $($Systems.Count)):"
     $Systems |  Select-Object -Property ResourceID,Name,SiteCode,ResourceType | Out-GridView
 
+    #########################
     Write-Host "`r`nTarget [$target]:"
-    $tgtColl = Get-CMCollection -Name $Target -collectionType Device
-    if ( -not $tgtColl ) {
+    $Found = Get-CMCollection -Name $Target -collectionType Device
+    if ( -not $Found ) {
         throw "Missing Target Collection $Target"
     }
-    $tgtColl | Select-Object -Property CollectionID,Name,LocalMemberCount,LimitToCollectionID,LimitToCollectionName | out-gridview
+    $Found | Select-Object -Property CollectionID,Name,LocalMemberCount,LimitToCollectionID,LimitToCollectionName | out-gridview
 
     Write-Host "`r`nVerify and continue"
 

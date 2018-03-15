@@ -16,9 +16,14 @@ Things that should be done for the final system:
 
 ### Move Device from Collection to Collection
 
-* Move machines from "Ready for Scheduling" to "Day XX"
+* Move From any to Y
+* Move All from X to Y
+* Move Ready for scheduling to Day X
 
-* Move from anywhere to "Ready for PreAssessment" or "Ready for Scheduling" (Reset)
+Variations:
+
+* Move machines from "Ready for Scheduling" to "Day XX"
+*  Move from anywhere to "Ready for PreAssessment" or "Ready for Scheduling" (Reset)
 - First XXX
 - Single Machine
 - Inner joined with another limiting group?

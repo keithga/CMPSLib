@@ -1,13 +1,17 @@
 [cmdletbinding()]
 param(
     $LimitingCollection = 'All Systems',
-    $ComputeNameTemplate = 'DTC{0:X6}', # DeskTop Computer
+    $ComputeNameTemplate = 'DTC{0:D6}', # DeskTop Computer
     $CountMin = 1,
     $CountMax = 1000
     )
 
 <#
-Create 5000 machines within the existing CM environment
+Create XXXX machines within the existing CM environment
+
+Danger, CM may be broken, ensure you are running the latest up to date CM:
+https://social.technet.microsoft.com/Forums/en-US/fadf5381-793f-4a9b-865d-17c6b9cddbe4/cm-1702-importcmcomputerinformation?forum=ConfigMgrPowerShell
+
 #>
 
 #######

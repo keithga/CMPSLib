@@ -5,6 +5,6 @@ function Get-CMCollectionBusinessName {
         [string] $Postfix
     )
 
-    $Name | Select-String -Pattern 'OSD_W10_(Spring|Fall)_(x86|x64)_' | % { $_.Matches.Value + $PostFix }
+    $Name | Select-String -Pattern '$($OSDW10Prefix)_([^_]*_)?(Spring|Fall)_' | % { $_.Matches.Value + $PostFix }
 
 }

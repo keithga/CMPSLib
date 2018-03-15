@@ -11,7 +11,7 @@ function Move-CMDeviceToCollection {
         [Parameter(Mandatory=$true, Position=0, ParameterSetName='CollNameSet')]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
-        [Alias('Name')] 
+        [Alias('TargetName')] 
         [string]    $DestCollectionName,
 
         [Parameter(Mandatory=$true, Position=0, ParameterSetName='CollIDSet')]
@@ -23,7 +23,7 @@ function Move-CMDeviceToCollection {
         [Parameter(Mandatory=$true, Position=0, ParameterSetName='CollIDSet')]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
-        [Alias('ID')] 
+        [Alias('TargetID')] 
         [string]    $DestCollectionID,
 
         [parameter(Mandatory=$true,  ValueFromPipeline=$true, ParameterSetName = 'CollNameSet')]
@@ -42,18 +42,18 @@ function Move-CMDeviceToCollection {
 
             Write-Verbose "Remove From $CollectionName $CollectionID"
             if ( $CollectionName ) {
-                Remove-CMResourceFromCollection -CollectionName $CollectionName -System $MySystem
+                Remove-CMDeviceFromCollection -CollectionName $CollectionName -System $MySystem
             }
             else {
-                Remove-CMResourceFromCollection -CollectionID $CollectionID -System $MySystem
+                Remove-CMDeviceFromCollection -CollectionID $CollectionID -System $MySystem
             }
 
             Write-Verbose "Write to $DestCollectionName $DestCollectionID"
             if ( $DestCollectionName ) {
-                Add-CMResourceFromCollection -CollectionName $DestCollectionName -System $MySystem
+                Add-CMDeviceToCollection -CollectionName $DestCollectionName -System $MySystem
             }
             else {
-                Add-CMResourceFromCollection -CollectionID $DestCollectionID -System $MySystem
+                Add-CMDeviceToCollection -CollectionID $DestCollectionID -System $MySystem
             }
 
         }

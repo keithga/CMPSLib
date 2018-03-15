@@ -3,14 +3,14 @@
     "",
     "\\BusinessActions",
     "\\BusinessQueries",
+    "\\BusinessRules",
     "\\PSCMLib",
     "\\PSCMLib\\BusinessRules",
     "\\PSCMLib\\Collections",
     "\\PSCMLib\\Common",
     "\\PSCMLib\\SQLQuery",
-    "\\Setup",
     "\\Tests"
   ],
-  "SelectedNode": "\\PSCMLib\\Collections\\Remove-CMResourceFromCollection.ps1",
+  "SelectedNode": "\\PSCMLib\\BusinessRules\\Get-CMOSDNaming.ps1",
   "PreviewInSolutionExplorer": false
 }

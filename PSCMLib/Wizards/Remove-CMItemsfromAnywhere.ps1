@@ -9,9 +9,7 @@ function Remove-CMItemsfromAnywhere {
         [string[]]  $ComputerName,
 
         [parameter(Mandatory=$false, Position=0, ParameterSetName="Collection")]
-        [string]    $Collection,
-
-        [string]   $SourceFilter = 'OSD_W10_Fall*'
+        [string]    $Collection
 
     )
 
@@ -51,8 +49,7 @@ function Remove-CMItemsfromAnywhere {
 Welcome to the Windows In-Place Upgrade Import Wizard.
 
 This program will assist in adding Computers for Windows 10 In-Place Upgrade process.
-
-    Serarch Parameters: [$SourceFilter]
+From any Collection that starts with the name $OSDW10Prefix
 
 This operation is for CM ADMINS only.
 
@@ -207,19 +204,9 @@ Start the installation from an existing collection
     $Systems |  Select-Object -Property ResourceID,Name,SiteCode,ResourceType | Out-GridView
 
     #########################
-    Write-Host "`r`nSearch [$SourceFilter]:"
+    Write-Host "`r`nSearch..."
 
-
-    $CollectionMembershipQuery = "SELECT SMS_Collection.*,SMS_FullCollectionMembership.* FROM SMS_FullCollectionMembership, SMS_Collection where ResourceID = '{0}' and SMS_Collection.name LIKE 'OSD_W10_%' and SMS_FullCollectionMembership.CollectionID = SMS_Collection.CollectionID"
-
-    $Found = $Systems | %{ gwmi @wmiargs -query ( $CollectionMembershipQuery -f $_.ResourceID )  } | 
-        %{ [pscustomobject] @{
-            Name = $_.SMS_FullCollectionMembership.Name
-            ResourceID   = $_.SMS_FullCollectionMembership.ResourceID
-            CollectionName = $_.SMS_COllection.Name
-            CollectionID   = $_.SMS_COllection.CollectionID
-        }} # | group-object -Property COllectionID
-
+    $Found = $Systems |  Get-CMDeviceFromAnyCollection
     if ( -not $Found ) {
         throw "Did not find any items"
     }
@@ -241,10 +228,7 @@ Start the installation from an existing collection
 
     # XXX TBD - Future: use $SiteCode, $COmputerName and $Credential to connect to remote machines. Skip for now
 
-    $Found | Group-Object -Property CollectionID | 
-        ForEach-Object {
-            $_.Group | Remove-CMResourceFromCollection -CollectionID $_.Name
-        }
+    $Found | remove-cmdeviceFromAnyCollection
 
     Write-Host @"
 
