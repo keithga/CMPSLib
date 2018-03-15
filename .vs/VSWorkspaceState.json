@@ -8,9 +8,9 @@
     "\\PSCMLib\\BusinessRules",
     "\\PSCMLib\\Collections",
     "\\PSCMLib\\Common",
-    "\\PSCMLib\\SQLQuery",
-    "\\Tests"
+    "\\PSCMLib\\Wizards",
+    "\\Setup"
   ],
-  "SelectedNode": "\\PSCMLib\\BusinessRules\\Get-CMOSDNaming.ps1",
+  "SelectedNode": "\\PSCMLib\\Wizards\\Add-CMItemsToStart.ps1",
   "PreviewInSolutionExplorer": false
 }
