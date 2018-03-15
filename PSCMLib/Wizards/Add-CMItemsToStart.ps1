@@ -72,6 +72,8 @@ If this is not your approved Target Collection, exit now.
         }
     }
 
+    $WMIArgs = Get-CMSiteForWMI
+
     ############################
 
     Write-Host "`r`n`r`n`tReady: $(Get-Location)"
@@ -133,7 +135,7 @@ Select a *.txt or *.csv file containing a list of computers to import.
         if ( get-item  $InputFile | ? Extension -eq '.txt' ) {
             $ComputerName = get-content  $InputFile
         }
-        elseif ( get-item .\testfile.txt | ? Extension -eq '.csv' ) {
+        elseif ( get-item $InputFile | ? Extension -eq '.csv' ) {
             $ComputerName = Import-Csv -Path $InputFile | % ComputerName
         }
     }
@@ -186,7 +188,7 @@ Start the installation from an existing collection
 
     }
     elseif ( $ComputerName ) {
-        $Systems = $ComputerName | %{ Get-CMDevice -name $_ } 
+        $Systems = $ComputerName | %{ gwmi @WmiArgs -class 'SMS_R_System' -filter "name='$($_)'" }
 
     }
     else {

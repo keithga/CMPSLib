@@ -14,6 +14,8 @@ quick script to buildout the wizard environment
 
 $ErrorActionPreference = 'stop'
 
+if(-not (Get-Module PSCMLib)) { Import-Module "$PSScriptRoot\..\PSCMLib" }
+
 #region Get wizard bits
 
 
