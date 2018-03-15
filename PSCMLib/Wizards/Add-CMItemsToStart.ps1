@@ -188,7 +188,7 @@ Start the installation from an existing collection
 
     }
     elseif ( $ComputerName ) {
-        $Systems = $ComputerName | %{ gwmi @WmiArgs -class 'SMS_R_System' -filter "name='$($_)'" }
+        $Systems = $ComputerName | get-CMDeviceObject
 
     }
     else {

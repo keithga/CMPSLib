@@ -50,8 +50,8 @@ if ( get-cmdevice -CollectionName $CollName1 | measure-object | ? Count -gt 0 ) 
 
 $MyColl = get-CMCollection -Name $CollName
 $MyColl1 = get-CMCollection -Name $CollName1
-$MyDev1 = get-cmDevice -Name $PCNames1
-$MyDev2 = get-cmDevice -Name $PCNames2
+$MyDev1 = get-cmDeviceObject -Name $PCNames1
+$MyDev2 = get-cmDeviceObject -Name $PCNames2
 
 ###########################
 
@@ -68,7 +68,7 @@ describe 'verify environment' {
     $MyDev1 | Measure-Object | % count | should be 10
     $MyDev2 | Measure-Object | % count | should be 10
 
-    get-cmDevice -Name $PCNames1 | % Name | should be (0..9 | %{ $PCNames1.replace('*','{0}') -f $_ })
+    get-cmDeviceObject -Name $PCNames1 | % Name | should be (0..9 | %{ $PCNames1.replace('*','{0}') -f $_ })
    
 }
 
