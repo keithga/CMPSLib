@@ -5,6 +5,7 @@ param(
     $Errors = @( 'OSVer','HWInvDate','FullDisk' ),
     $environments = @( '','_DEV','_UAT' ),
     $seasons = @('Fall','Spring'),
+    [switch] $Stripe,
     [switch] $PrintOnly
 )
 
@@ -109,13 +110,21 @@ Foreach ( $Season in $seasons ) {
             $List += Format-WAASScheduling -EnvName $environment -Season $Season -Group $BUsinessUnit
         }
 
-        foreach ( $Error in $Errors ) { 
-            # $List += 'OSD_W10{0}_{1}_NonCompliant_{2}' -f $Environment,$Season,$Error
-            $List += Format-WAASStdErr -EnvName $environment -Season $Season -Err $Error
+        foreach ( $Err in $Errors ) { 
+            # $List += 'OSD_W10{0}_{1}_NonCompliant_{2}' -f $Environment,$Season,$Err
+            $List += Format-WAASStdErr -EnvName $environment -Season $Season -Err $Err
         }
 
     }
 
+}
+
+if ( $Stripe ) {
+    foreach ( $Unit in $BusinessUnits ) {
+        Foreach ( $Group  in "Alpha","Bravo","Charlie","Delta" ) { 
+            $List += '{0}_OSD_W10_{1}' -f $unit,$Group
+        }
+    }
 }
 
 if ( $PrintOnly ) { $list | Write-output ; exit }

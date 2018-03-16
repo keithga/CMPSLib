@@ -63,6 +63,14 @@ foreach ( $Target in $Targets ) {
 "%~dps0\..\Bin\PowerShell Wizard Host.exe" "(import-module '%~dps0\..\PSCMLib');(add-cmitemstostart -Target '$(Format-WAASPreAssessGroup -Season $Season -Group $Target)' -InputFile '%~f1' )"
 "@ | Out-File -Encoding ascii -Force "$PSscriptRoot\..\BusinessActions\Import_Ready_For_PreAssessment_$Target.cmd"
 
+@"
+@if not defined debug echo off
+
+:: Batch script to call wizard for type $Target
+"%~dps0\..\Bin\PowerShell Wizard Host.exe" "(import-module '%~dps0\..\PSCMLib');(request-CMMoveToDay -SourceCollection '$(Format-WAASScheduling -Season $Season -Group $Target)' )"
+"@ | Out-File -Encoding ascii -Force "$PSscriptRoot\..\BusinessActions\Import_Ready_For_PreAssessment_$Target.cmd"
+
+    # -StripeCollection ENG_OSD_W10_*
 }
 
 ########################

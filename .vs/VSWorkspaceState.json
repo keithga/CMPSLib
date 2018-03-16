@@ -2,14 +2,14 @@
   "ExpandedNodes": [
     "",
     "\\BusinessActions",
-    "\\BusinessQueries",
     "\\BusinessRules",
     "\\PSCMLib",
     "\\PSCMLib\\BusinessRules",
     "\\PSCMLib\\Collections",
     "\\PSCMLib\\Common",
     "\\PSCMLib\\Wizards",
-    "\\Setup"
+    "\\Setup",
+    "\\Tests"
   ],
   "SelectedNode": "\\PSCMLib\\Wizards\\Add-CMItemsToStart.ps1",
   "PreviewInSolutionExplorer": false
