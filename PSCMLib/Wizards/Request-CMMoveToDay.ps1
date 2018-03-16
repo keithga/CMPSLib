@@ -184,7 +184,7 @@ Select a target destination for this request
         SourceCollection = $SrcColl.Name
         StripeCollection = $StripeColl.Name
         Date = $TargetDay.ToString('d')
-        Systems = $Systems | Select -First $Limit 
+        Systems = $Systems | Select -First $Limit -Property Name,ResourceID
     } | Export-Clixml -Path $CLIXMLFile
 
     ############################
@@ -203,15 +203,30 @@ Select a target destination for this request
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
     Finished
 
-    Results: $CLIXMLFile
-
     Protip: use Powershell to review the file before submitting:
-        import-clixml $CLIXMLFile
-        import-clixml $CLIXMLFile | % Systems | % Name
+        import-clixml <path>
 
 "@
+
+    if( $Host.Name -eq "PowershellWizardHost" ) {
+        Write-host "Output:"
+        [PowerShell_Wizard_Host.PSHostCallBack]::DisplayHyperLink($CLIXMLFile,"Notepad.exe",$CLIXMLFile)
+    }
 
     Wait-ForUserConfirmation
     #endregion

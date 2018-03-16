@@ -191,7 +191,7 @@ Start the installation from an existing collection
 
     }
     elseif ( $ComputerName ) {
-        $Systems = $ComputerName | Get-CMDeviceobject
+        $Systems = $ComputerName | % { Get-CMDeviceobject -Name $_ }
     }
     else {
         throw "[10] No Computers found for addition!"

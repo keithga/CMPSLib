@@ -4,7 +4,9 @@ Naming convention for CM collections
 
 $OSDW10Prefix = 'OSD_W10'
 
+function get-OSDW10Prefix { $OSDW10Prefix }
 function get-EnumOSDOperations { @('Preassessment','Precache_Compat_Scan','Finished','Ready_For_Scheduling') }
+
 
 ###############################################################################
 

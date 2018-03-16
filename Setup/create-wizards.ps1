@@ -68,9 +68,15 @@ foreach ( $Target in $Targets ) {
 
 :: Batch script to call wizard for type $Target
 "%~dps0\..\Bin\PowerShell Wizard Host.exe" "(import-module '%~dps0\..\PSCMLib');(request-CMMoveToDay -SourceCollection '$(Format-WAASScheduling -Season $Season -Group $Target)' )"
-"@ | Out-File -Encoding ascii -Force "$PSscriptRoot\..\BusinessActions\Import_Ready_For_PreAssessment_$Target.cmd"
+"@ | Out-File -Encoding ascii -Force "$PSscriptRoot\..\BusinessActions\Import_Ready_For_Scheduling_$Target.cmd"
 
-    # -StripeCollection ENG_OSD_W10_*
+@"
+@if not defined debug echo off
+
+:: Batch script to call wizard for type $Target
+"%~dps0\..\Bin\PowerShell Wizard Host.exe" "(import-module '%~dps0\..\PSCMLib');(request-CMMoveToDay -SourceCollection '$(Format-WAASScheduling -Season $Season -Group $Target)' -StripeCollection '$($Target)_OSD_W10_*' )"
+"@ | Out-File -Encoding ascii -Force "$PSscriptRoot\..\BusinessActions\Import_Ready_For_Scheduling_With_Stripes_$Target.cmd"
+
 }
 
 ########################
@@ -80,7 +86,7 @@ foreach ( $Target in $Targets ) {
 
 :: Batch script to call wizard for type Remove
 
-"%~dps0\..\Bin\PowerShell Wizard Host.exe" "(import-module '%~dps0\..\PSCMLib');(Remove-CMItemsfromAnywhere -SourceFilter '$($OSDW10Prefix)_*' -InputFile '%~f1' )"
+"%~dps0\..\Bin\PowerShell Wizard Host.exe" "(import-module '%~dps0\..\PSCMLib');(Remove-CMItemsfromAnywhere -InputFile '%~f1' )"
 "@ | Out-File -Encoding ascii -Force "$PSscriptRoot\..\BusinessActions\Remove_System_From_Anywhere_ADMINONLY.cmd"
 
 

@@ -39,7 +39,7 @@ FROM LastKnownStatus LKS
 JOIN [dbo].[v_Advertisement] adv on adv.AdvertisementID = LKS.AdvertisementID
 JOIN [dbo].[v_collection] col on adv.CollectionID = col.CollectionID
 WHERE rn = 1 AND ExecutionTime > DATEADD(Day, -40, getdate()) 
-    AND col.Name LIKE '$($OSDW10Prefix)_%_Precache_Compat_Scan'
+    AND col.Name LIKE '$(get-OSDW10Prefix)_%_Precache_Compat_Scan'
     AND LKS.LastStatusMessageID = 11143
 "@
 
@@ -69,7 +69,7 @@ FROM LastKnownStatus LKS
 JOIN [dbo].[v_Advertisement] adv on adv.AdvertisementID = LKS.AdvertisementID
 JOIN [dbo].[v_collection] col on adv.CollectionID = col.CollectionID
 WHERE rn = 1 AND ExecutionTime > DATEADD(Day, -40, getdate()) 
-    AND col.Name LIKE '$($OSDW10Prefix)_%_Day_%'
+    AND col.Name LIKE '$(get-OSDW10Prefix)_%_Day_%'
     AND LKS.LastStatusMessageID = 11143
 "@
 

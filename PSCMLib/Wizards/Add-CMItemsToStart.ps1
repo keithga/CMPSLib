@@ -188,7 +188,7 @@ Start the installation from an existing collection
 
     }
     elseif ( $ComputerName ) {
-        $Systems = $ComputerName | get-CMDeviceObject
+        $Systems = $ComputerName | %{ get-CMDeviceObject -Name $_ }
 
     }
     else {
