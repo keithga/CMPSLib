@@ -1,14 +1,15 @@
 
 function Move-CMDeviceToCollection {
-    [CmdLetBinding()]
+    [CmdLetBinding(SupportsShouldProcess=$true)]
     Param(
+        [Parameter(Mandatory=$true, Position=1, ParameterSetName='CollPostFixSet')]
         [Parameter(Mandatory=$true, Position=0, ParameterSetName='CollNameSet')]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
         [Alias('Name')] 
         [string]    $CollectionName,
 
-        [Parameter(Mandatory=$true, Position=0, ParameterSetName='CollNameSet')]
+        [Parameter(Mandatory=$true, Position=1, ParameterSetName='CollNameSet')]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
         [Alias('TargetName')] 
@@ -20,14 +21,20 @@ function Move-CMDeviceToCollection {
         [Alias('ID')] 
         [string]    $CollectionID,
 
-        [Parameter(Mandatory=$true, Position=0, ParameterSetName='CollIDSet')]
+        [Parameter(Mandatory=$true, Position=1, ParameterSetName='CollIDSet')]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
         [Alias('TargetID')] 
         [string]    $DestCollectionID,
 
+        [Parameter(Mandatory=$true, Position=1, ParameterSetName='CollPostFixSet')]
+        [ValidateNotNull()]
+        [ValidateNotNullOrEmpty()]
+        [string]    $DestCollectionPostFix,
+
         [parameter(Mandatory=$true,  ValueFromPipeline=$true, ParameterSetName = 'CollNameSet')]
         [parameter(Mandatory=$true,  ValueFromPipeline=$true, ParameterSetName = 'CollIDSet')]
+        [Parameter(Mandatory=$true,  ValueFromPipeline=$true, ParameterSetName ='CollPostFixSet')]
         $System
     )
 
@@ -51,6 +58,10 @@ function Move-CMDeviceToCollection {
             Write-Verbose "Write to $DestCollectionName $DestCollectionID"
             if ( $DestCollectionName ) {
                 Add-CMDeviceToCollection -CollectionName $DestCollectionName -System $MySystem
+            }
+            elseif ( $DestCollectionPostFix ) {
+                $NewTargetCollection = Get-CMCollectionBusinessName -Name $CollectionName -PostFix $DestCollectionPostFix
+                Add-CMDeviceToCollection -CollectionName $NewTargetCollection -System $MySystem
             }
             else {
                 Add-CMDeviceToCollection -CollectionID $DestCollectionID -System $MySystem

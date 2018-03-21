@@ -1,6 +1,6 @@
 
 function Move-CMDeviceToCollectionFromAny {
-    [CmdLetBinding()]
+    [CmdLetBinding(SupportsShouldProcess=$true)]
     Param(
         [Parameter(Mandatory=$true, Position=0, ParameterSetName='CollNameSet')]
         [ValidateNotNull()]
@@ -14,6 +14,12 @@ function Move-CMDeviceToCollectionFromAny {
         [Alias('ID')] 
         [string]    $CollectionID,
 
+        [Parameter(Mandatory=$true, Position=0, ParameterSetName='CollPostFixSet')]
+        [ValidateNotNull()]
+        [ValidateNotNullOrEmpty()]
+        [string]    $CollectionPostFix,
+
+        [Parameter(Mandatory=$true,  ValueFromPipeline=$true, ParameterSetName='CollPostFixSet')]
         [parameter(Mandatory=$true,  ValueFromPipeline=$true, ParameterSetName = 'CollNameSet')]
         [parameter(Mandatory=$true,  ValueFromPipeline=$true, ParameterSetName = 'CollIDSet')]
         # custom object from Get-DeviceFromAnyCollection, do not confuse with $System
@@ -26,6 +32,9 @@ function Move-CMDeviceToCollectionFromAny {
     process {
         if ( $CollectionName ) {
             $MySystem += $AnySystem | ? CollectionName -NE $CollectionName
+        }
+        elseif ( $CollectionPostFix ) {
+            $MySystem += $AnySystem | ? { -not $_.COllectionName.EndsWith($CollectionPostFix) } 
         }
         else {
             $MySystem += $AnySystem | ? CollectionID -NE $CollectionID
@@ -41,6 +50,15 @@ function Move-CMDeviceToCollectionFromAny {
             if ( $CollectionName ) {
                 # although tecnically -System and $AnySytem are different types, it works here, only use Name and ResourceID
                 Add-CMDeviceToCollection -CollectionName $CollectionName -System $MySystem
+            }
+            elseif ( $CollectionPostFix ) {
+                $MySystem |
+                    Group-Object -Property CollectionName | 
+                    ForEach-Object {
+                        $NewTargetCollection = Get-CMCollectionBusinessName -Name $_.Name -PostFix $CollectionPostFix
+                        $_.Group | Add-CMDeviceToCollection -CollectionName $NewTargetCollection
+                    }
+
             }
             else {
                 Add-CMDeviceToCollection -CollectionID $CollectionID -System $MySystem

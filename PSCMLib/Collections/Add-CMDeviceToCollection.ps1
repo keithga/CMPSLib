@@ -29,7 +29,7 @@ Function Add-CMDeviceToCollection {
     Return the Member count before and after the additions
     #>
 
-    [CmdLetBinding()]
+    [CmdLetBinding(SupportsShouldProcess=$true)]
     Param(
 
         [Parameter(Mandatory=$true, Position=0, ParameterSetName='CollNameSet')]
@@ -102,8 +102,10 @@ Function Add-CMDeviceToCollection {
         Write-Verbose "Adding $($Rules.Count) rules to Collection: $CollectionID"
 
         $InParams.CollectionRules += $Rules.psobject.BaseOBject
-        $CollectionQuery.PSBase.InvokeMethod('AddMembershipRules',$InParams,$null) | out-string -Width 200 | write-verbose
-        $CollectionQuery.RequestRefresh() | out-string -Width 200 | write-verbose
+        if( $pscmdlet.ShouldProcess("$Rules", "AddDevice") ) { 
+            $CollectionQuery.PSBase.InvokeMethod('AddMembershipRules',$InParams,$null) | out-string -Width 200 | write-verbose
+            $CollectionQuery.RequestRefresh() | out-string -Width 200 | write-verbose
+        }
 
         if ( $VerbosePreference -eq 'continue' -or $PassThru ) {
             start-sleep -Seconds 2 # flush

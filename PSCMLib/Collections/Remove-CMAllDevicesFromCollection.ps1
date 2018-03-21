@@ -4,7 +4,7 @@ Function Remove-CMAllDevicesFromCollection {
     Nuke it!
     #>
 
-    [CmdLetBinding()]
+    [CmdLetBinding(SupportsShouldProcess=$true)]
     Param(
         [Parameter(Mandatory=$true, Position=0, ParameterSetName='CollNameSet')]
         [ValidateNotNull()]

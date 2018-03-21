@@ -124,6 +124,8 @@ Select the target Date for this batch of computers"
 
     }
 
+    $DateCOllection = "{0:d2}_PM'" -f $TargetDay.Day 
+
     #endregion
 
     #region Target Output
@@ -163,7 +165,7 @@ Select a target destination for this request
 
 
         Output Path: [$path]
-        Target Date: [$($TargetDay.ToString('D'))]
+        Target Date: [$DateCOllection]
 
         Press Next to contiune, otherwise cancel
 "@
@@ -183,7 +185,7 @@ Select a target destination for this request
         RequestedTime = [datetime]::now
         SourceCollection = $SrcColl.Name
         StripeCollection = $StripeColl.Name
-        Date = $TargetDay.ToString('d')
+        TargetCollection = $DateCOllection 
         Systems = $Systems | Select -First $Limit -Property Name,ResourceID
     } | Export-Clixml -Path $CLIXMLFile
 

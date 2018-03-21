@@ -29,7 +29,7 @@ Function Remove-CMDeviceFromCollection {
     Return the Member count before and after the additions
     #>
 
-    [CmdLetBinding()]
+    [CmdLetBinding(SupportsShouldProcess=$true)]
     Param(
         [Parameter(Mandatory=$true, Position=0, ParameterSetName='CollNameSet')]
         [ValidateNotNull()]
@@ -99,8 +99,10 @@ Function Remove-CMDeviceFromCollection {
         Write-Verbose "Adding $($Rules.Count) rules to Collection: $CollectionID"
 
         $InParams.CollectionRules += $Rules.psobject.BaseOBject
-        $CollectionQuery.PSBase.InvokeMethod('DeleteMembershipRules',$InParams,$null) | Out-String -Width 200 | Write-Verbose
-        $CollectionQuery.RequestRefresh() | Out-String -Width 200 | write-verbose
+        if ( $pscmdlet.ShouldProcess("$Rules", "Remove") ) { 
+            $CollectionQuery.PSBase.InvokeMethod('DeleteMembershipRules',$InParams,$null) | Out-String -Width 200 | Write-Verbose
+            $CollectionQuery.RequestRefresh() | Out-String -Width 200 | write-verbose
+        }
 
         if ( $VerbosePreference -eq 'continue' -or $PassThru ) {
             $MemberCount = Get-WmiObject @WMIArgs -Class SMS_Collection -ErrorAction Stop -Filter $Filter

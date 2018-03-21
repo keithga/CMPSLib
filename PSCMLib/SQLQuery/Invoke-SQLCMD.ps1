@@ -12,6 +12,7 @@ Function Invoke-SQLCMD {
         [string] $HostName,
         [parameter(Mandatory=$true)]
         [string] $Database,
+        [switch] $ExecuteNonQuery,
         [parameter(Mandatory=$true)]
         [string] $Query,
         [string[]] $args
@@ -29,13 +30,21 @@ Function Invoke-SQLCMD {
     $SQLCommand.Connection = $SqlConnection
     $SQLCommand.CommandText = ( $Query -f $args )
 
-    $SQLAdapter = New-Object System.Data.SqlClient.SqlDataAdapter
-    $SqlAdapter.SelectCommand = $SQLCommand
+    if ( $ExecuteNonQuery ) {
+        $Sqlcommand.Connection.open();
+        $SQLCommand.ExecuteNonQuery();
+    }
+    else {
+        $SQLAdapter = New-Object System.Data.SqlClient.SqlDataAdapter
+        $SqlAdapter.SelectCommand = $SQLCommand
 
-    $SQLDataset = New-Object System.Data.DataSet
-    $SqlAdapter.fill($SQLDataset) | out-null
+        $SQLDataset = New-Object System.Data.DataSet
+        $SqlAdapter.fill($SQLDataset) | out-null
 
-    $SQLDataset.Tables[0] | Write-Output
+        $SQLDataset.Tables[0] | Write-Output
+
+    }
+
     $SqlConnection.close()
 }
 

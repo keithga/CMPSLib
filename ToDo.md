@@ -8,6 +8,8 @@
 
 Things that should be done for the final system:
 
+Logging
+
 ## FUnctions
 
 ### MOve from Anywhere to $Target

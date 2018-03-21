@@ -33,7 +33,7 @@ This script will group the collections, and remove each item for each group in b
 #>
 
 
-    [CmdLetBinding()]
+    [CmdLetBinding(SupportsShouldProcess=$true)]
     Param(
         [parameter(Mandatory=$true,  ValueFromPipeline=$true)]
         # custom object from Get-DeviceFromAnyCollection, do not confuse with $System
