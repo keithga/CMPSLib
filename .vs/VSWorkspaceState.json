@@ -9,8 +9,8 @@
     "\\PSCMLib\\Common",
     "\\PSCMLib\\SQLQuery",
     "\\PSCMLib\\Wizards",
-    "\\Setup"
+    "\\Tests"
   ],
-  "SelectedNode": "\\PSCMLib\\Wizards\\Request-CMMoveToDay.ps1",
+  "SelectedNode": "\\BusinessRules\\step-Job5DailyCleenup.ps1",
   "PreviewInSolutionExplorer": false
 }

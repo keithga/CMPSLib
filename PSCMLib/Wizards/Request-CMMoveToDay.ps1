@@ -15,7 +15,7 @@ function Request-CMMoveToDay {
         [string]   $Path
 
     )
-`
+
     #region Support routines
 
     function Wait-ForUserConfirmation {
@@ -104,6 +104,17 @@ If this is not your approved Business Unit, exit now.
          $Systems = Get-CMDevice -CollectionID $SrcColl.CollectionID 
     }
 
+    Clear-Host 
+    $host.ui.RawUI.WindowTitle = "Find Systems"
+    Write-Host "`r`nFound Systems  (Count: $($Systems.Count)):"
+    $Systems |  Select-Object -Property ResourceID,Name,SiteCode | Select -first $Limit | Out-GridView
+    if ( $Systems.COunt -gt $Limit ) {  Write-Host "{only first $Limit are shown}" }
+
+
+    if ( -not ( $InputFile -or $ComputerName -or $Collection ) ) {
+        Wait-ForUserConfirmation
+    }
+
     #endregion
 
     #region Date Selection 
@@ -155,15 +166,9 @@ Select a target destination for this request
 
     #region Confirmation 
 
-    Clear-Host 
-    $host.ui.RawUI.WindowTitle = "Verify"
-    Write-Host "`r`nFound Systems  (Count: $($Systems.Count)):"
-    $Systems |  Select-Object -Property ResourceID,Name,SiteCode | Select -first $Limit | Out-GridView
-    if ( $Systems.COunt -gt $Limit ) {  Write-Host "{only first $Limit are shown}" }
-
     Write-Host @"
 
-
+        Machine Count: [$($Systems.Count)] Machines to be moved
         Output Path: [$path]
         Target Date: [$DateCOllection]
 
