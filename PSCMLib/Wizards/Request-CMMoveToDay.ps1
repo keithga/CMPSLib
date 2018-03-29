@@ -23,7 +23,7 @@ function Request-CMMoveToDay {
             Write-Verbose "PowerShell ISE does not have a ReadKey() function"
             REad-Host "Press return to continue..."
         }
-        else {
+]        else {
             if ( $Host.Name -eq 'ConsoleHost' ) {
                 Write-host "Press Any Key to Continue..."
             }
@@ -84,6 +84,8 @@ If this is not your approved Business Unit, exit now.
     #endregion
 
     #region Find Systems
+    
+    write-host "`r`n`r`n Searching [$SourceCollection] ..."
 
     $SrcColl = get-CMCollection -name $SourceCollection
     if (-not $SrcColl ) { throw "Missing Collection $SourceCollection" }
@@ -135,7 +137,7 @@ Select the target Date for this batch of computers"
 
     }
 
-    $DateCOllection = "DAY_{0:d2}_8PM'" -f $TargetDay.Day 
+    $DateCOllection = "DAY_{0:d2}_8PM" -f $TargetDay.Day 
 
     #endregion
 
