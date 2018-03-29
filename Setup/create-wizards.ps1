@@ -3,11 +3,12 @@ param(
     $TargetZipPath = "$env:temp\ps2wiz",
     $TargetZipFile = "$env:temp\ps2wiz.zip",
     $targets = @('ENG','OPS','SEC'),
-    $Season = 'Fall'
+    $Season = 'Fall',
+    $Path
 )
 
 <#
-
+P
 quick script to buildout the wizard environment
 
 #>
@@ -17,7 +18,7 @@ $ErrorActionPreference = 'stop'
 if(-not (Get-Module PSCMLib)) { Import-Module "$PSScriptRoot\..\PSCMLib" }
 
 #region Get wizard bits
-
+ 
 
 if ( -not ( Test-Path "$PSscriptRoot\..\bin\PowerShell Wizard Host.exe" ) ) {
 
@@ -75,8 +76,8 @@ if not exist "%temp%\PowerShell Wizard Host.exe" copy /y "%~dps0\..\Bin\PowerShe
 foreach ( $Target in $Targets ) {
 
     New-BatchSCriptWrapper -Command "(add-cmitemstostart -Target '$(Format-WAASPreAssessGroup -Season $Season -Group $Target)' -InputFile '%~f1' )" -BatchScript "$PSscriptRoot\..\BusinessActions\Import_Ready_For_PreAssessment_$Target.cmd"
-    New-BatchSCriptWrapper -Command "(request-CMMoveToDay -SourceCollection '$(Format-WAASScheduling -Season $Season -Group $Target)' )" -BatchScript "$PSscriptRoot\..\BusinessActions\Import_Ready_For_Scheduling_$Target.cmd"
-    New-BatchSCriptWrapper -Command "(request-CMMoveToDay -SourceCollection '$(Format-WAASScheduling -Season $Season -Group $Target)' -StripeCollection '$($Target)_OSD_W10_*' )" -BatchScript "$PSscriptRoot\..\BusinessActions\Import_Ready_For_Scheduling_With_Stripes_$Target.cmd"
+    New-BatchSCriptWrapper -Command "(request-CMMoveToDay -SourceCollection '$(Format-WAASScheduling -Season $Season -Group $Target)' -Path '$Path' )" -BatchScript "$PSscriptRoot\..\BusinessActions\Import_Ready_For_Scheduling_$Target.cmd"
+    New-BatchSCriptWrapper -Command "(request-CMMoveToDay -SourceCollection '$(Format-WAASScheduling -Season $Season -Group $Target)' -Path '$Path' -StripeCollection '$($Target)_OSD_W10_*' )" -BatchScript "$PSscriptRoot\..\BusinessActions\Import_Ready_For_Scheduling_With_Stripes_$Target.cmd"
 
 }
 
