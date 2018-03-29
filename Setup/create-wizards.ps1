@@ -53,41 +53,33 @@ new-item -ItemType Directory -Path "$PSscriptRoot\..\BusinessActions" -ErrorActi
 
 ########################
 
-foreach ( $Target in $Targets ) {
+function New-BatchSCriptWrapper {
+
+    Param(
+        $Command,
+        $BatchScript
+    )
 
 @"
 @if not defined debug echo off
 
 :: Batch script to call wizard for type $Target
 
-"%~dps0\..\Bin\PowerShell Wizard Host.exe" "(import-module '%~dps0\..\PSCMLib');(add-cmitemstostart -Target '$(Format-WAASPreAssessGroup -Season $Season -Group $Target)' -InputFile '%~f1' )"
-"@ | Out-File -Encoding ascii -Force "$PSscriptRoot\..\BusinessActions\Import_Ready_For_PreAssessment_$Target.cmd"
+if not exist "%temp%\PowerShell Wizard Host.exe" copy /y "%~dps0\..\Bin\PowerShell Wizard Host.exe" "%temp%\PowerShell Wizard Host.exe" > NUL
 
-@"
-@if not defined debug echo off
-
-:: Batch script to call wizard for type $Target
-"%~dps0\..\Bin\PowerShell Wizard Host.exe" "(import-module '%~dps0\..\PSCMLib');(request-CMMoveToDay -SourceCollection '$(Format-WAASScheduling -Season $Season -Group $Target)' )"
-"@ | Out-File -Encoding ascii -Force "$PSscriptRoot\..\BusinessActions\Import_Ready_For_Scheduling_$Target.cmd"
-
-@"
-@if not defined debug echo off
-
-:: Batch script to call wizard for type $Target
-"%~dps0\..\Bin\PowerShell Wizard Host.exe" "(import-module '%~dps0\..\PSCMLib');(request-CMMoveToDay -SourceCollection '$(Format-WAASScheduling -Season $Season -Group $Target)' -StripeCollection '$($Target)_OSD_W10_*' )"
-"@ | Out-File -Encoding ascii -Force "$PSscriptRoot\..\BusinessActions\Import_Ready_For_Scheduling_With_Stripes_$Target.cmd"
+"%temp%\PowerShell Wizard Host.exe" "(set-location c:);(set-executionpolicy unrestricted -scope process -force -EA silentlycontinue);(import-module '%~dps0\..\PSCMLib');$Command"
+"@ -replace "`n","`r`n" | Out-File -Encoding ascii -Force $BatchScript
 
 }
 
-########################
+foreach ( $Target in $Targets ) {
 
-@"
-@if not defined debug echo off
+    New-BatchSCriptWrapper -Command "(add-cmitemstostart -Target '$(Format-WAASPreAssessGroup -Season $Season -Group $Target)' -InputFile '%~f1' )" -BatchScript "$PSscriptRoot\..\BusinessActions\Import_Ready_For_PreAssessment_$Target.cmd"
+    New-BatchSCriptWrapper -Command "(request-CMMoveToDay -SourceCollection '$(Format-WAASScheduling -Season $Season -Group $Target)' )" -BatchScript "$PSscriptRoot\..\BusinessActions\Import_Ready_For_Scheduling_$Target.cmd"
+    New-BatchSCriptWrapper -Command "(request-CMMoveToDay -SourceCollection '$(Format-WAASScheduling -Season $Season -Group $Target)' -StripeCollection '$($Target)_OSD_W10_*' )" -BatchScript "$PSscriptRoot\..\BusinessActions\Import_Ready_For_Scheduling_With_Stripes_$Target.cmd"
 
-:: Batch script to call wizard for type Remove
+}
 
-"%~dps0\..\Bin\PowerShell Wizard Host.exe" "(import-module '%~dps0\..\PSCMLib');(Remove-CMItemsfromAnywhere -InputFile '%~f1' )"
-"@ | Out-File -Encoding ascii -Force "$PSscriptRoot\..\BusinessActions\Remove_System_From_Anywhere_ADMINONLY.cmd"
-
+New-BatchSCriptWrapper -Command "(Remove-CMItemsfromAnywhere -InputFile '%~f1' )" -BatchScript "$PSscriptRoot\..\BusinessActions\Remove_System_From_Anywhere_ADMINONLY.cmd"
 
 #endregion
