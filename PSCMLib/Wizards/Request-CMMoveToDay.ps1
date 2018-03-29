@@ -23,7 +23,7 @@ function Request-CMMoveToDay {
             Write-Verbose "PowerShell ISE does not have a ReadKey() function"
             REad-Host "Press return to continue..."
         }
-]        else {
+        else {
             if ( $Host.Name -eq 'ConsoleHost' ) {
                 Write-host "Press Any Key to Continue..."
             }
@@ -77,7 +77,7 @@ If this is not your approved Business Unit, exit now.
 
     Write-Host "`r`n`r`n`tReady: $(Get-Location)"
 
-    if ( -not ( $InputFile -or $ComputerName -or $Collection ) ) {
+    if ( -not ( $TargetDay ) ) {
         Wait-ForUserConfirmation
     }
 
@@ -113,7 +113,7 @@ If this is not your approved Business Unit, exit now.
     if ( $Systems.COunt -gt $Limit ) {  Write-Host "{only first $Limit are shown}" }
 
 
-    if ( -not ( $InputFile -or $ComputerName -or $Collection ) ) {
+    if ( -not ( $TargetDay ) ) {
         Wait-ForUserConfirmation
     }
 
@@ -130,7 +130,7 @@ Select the target Date for this batch of computers"
 "@
 
     if ( -not $TargetDay ) { 
-        [datetime]$TargetDay = 1..20 | %{ ([datetime]::Now).AddDays( $_ ) } | 
+        [datetime]$TargetDay = 0..20 | %{ ([datetime]::Now).AddDays( $_ ) } | 
             Test-ForBankersDays  | 
             %{ $_.ToString('D') } | 
             Out-GridView -OutputMode Single
@@ -168,7 +168,13 @@ Select a target destination for this request
 
     #region Confirmation 
 
+    Clear-Host 
+
+    $host.ui.RawUI.WindowTitle = "Verify"
+
     Write-Host @"
+
+One final verification before submitting the request to the Background service:
 
         Machine Count: [$($Systems.Count)] Machines to be moved
         Output Path: [$path]
@@ -180,11 +186,19 @@ Select a target destination for this request
 
     #endregion
 
+    #region Cleanup
+
+    Pop-Location -StackName CM
+
+    #endregion
+
     #region PRocess
 
     $host.ui.RawUI.WindowTitle = "Procesing"
 
     $CLIXMLFile = Join-Path $Path ([guid]::NewGuid().ToString() + '.clixml')
+
+    if ( -not ( test-path $path ) ) { new-item -ItemType Directory -path $Path -Force -ErrorAction SilentlyContinue | out-null }
 
     @{
         Requestor = $env:USERNAME
@@ -238,12 +252,6 @@ Select a target destination for this request
     }
 
     Wait-ForUserConfirmation
-    #endregion
-
-    #region Cleanup
-
-    Pop-Location -StackName CM
-
     #endregion
 
 
