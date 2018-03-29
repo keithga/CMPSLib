@@ -68,7 +68,7 @@ function New-BatchSCriptWrapper {
 
 if not exist "%temp%\PowerShell Wizard Host.exe" copy /y "%~dps0\..\Bin\PowerShell Wizard Host.exe" "%temp%\PowerShell Wizard Host.exe" > NUL
 
-"%temp%\PowerShell Wizard Host.exe" "(set-location c:);(set-executionpolicy unrestricted -scope process -force -EA silentlycontinue);(import-module '%~dps0\..\PSCMLib');$Command"
+"%temp%\PowerShell Wizard Host.exe" "(set-location c:);(set-executionpolicy Bypass -scope process -force -EA silentlycontinue);(import-module '%~dps0\..\PSCMLib');$Command"
 "@ -replace "`n","`r`n" | Out-File -Encoding ascii -Force $BatchScript
 
 }
