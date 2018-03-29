@@ -77,8 +77,8 @@ foreach ( $Target in $Targets ) {
 
     New-BatchSCriptWrapper -Command "(add-cmitemstostart -Target '$(Format-WAASPreAssessGroup -Season $Season -Group $Target)' -InputFile '%~f1' )" -BatchScript "$PSscriptRoot\..\BusinessActions\Import_Ready_For_PreAssessment_$Target.cmd"
     if ($Path) {
-        New-BatchSCriptWrapper -Command "(request-CMMoveToDay -SourceCollection '$(Format-WAASScheduling -Season $Season -Group $Target)' -Path ('$Path\' + [GUID]::newGuid().GUID + '\MoveToDay') )" -BatchScript "$PSscriptRoot\..\BusinessActions\Import_Ready_For_Scheduling_$Target.cmd"
-        New-BatchSCriptWrapper -Command "(request-CMMoveToDay -SourceCollection '$(Format-WAASScheduling -Season $Season -Group $Target)' -Path ('$Path\' + [GUID]::newGuid().GUID + '\MoveToDay') -StripeCollection '$($Target)_OSD_W10_*' )" -BatchScript "$PSscriptRoot\..\BusinessActions\Import_Ready_For_Scheduling_With_Stripes_$Target.cmd"
+        New-BatchSCriptWrapper -Command "(request-CMMoveToDay -SourceCollection '$(Format-WAASScheduling -Season $Season -Group $Target)' -Path ('$Path\MoveToDay\' + [GUID]::newGuid().GUID) )" -BatchScript "$PSscriptRoot\..\BusinessActions\Import_Ready_For_Scheduling_$Target.cmd"
+        New-BatchSCriptWrapper -Command "(request-CMMoveToDay -SourceCollection '$(Format-WAASScheduling -Season $Season -Group $Target)' -Path ('$Path\MoveToDay\' + [GUID]::newGuid().GUID) -StripeCollection '$($Target)_OSD_W10_*' )" -BatchScript "$PSscriptRoot\..\BusinessActions\Import_Ready_For_Scheduling_With_Stripes_$Target.cmd"
     }
     else {
         New-BatchSCriptWrapper -Command "(request-CMMoveToDay -SourceCollection '$(Format-WAASScheduling -Season $Season -Group $Target)' )" -BatchScript "$PSscriptRoot\..\BusinessActions\Import_Ready_For_Scheduling_$Target.cmd"
