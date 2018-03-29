@@ -29,7 +29,7 @@ foreach ( $File in get-childitem $Path\ScheduleDay\*.clixml ) {
                 $ErrorFile = $True
                 break
             }
-            if ( $ProcessItem.TargetCollection -notmatch '[0-9][0-9]_PM' ) {
+            if ( $ProcessItem.TargetCollection -notmatch 'DAY_[0-9][0-9]_8PM' ) {
                 write-ToLog "`tBad Target Collection: $ProcessItem.TargetCollection"
                 $ErrorFile = $True
                 break

@@ -7,8 +7,10 @@
     "\\PSCMLib\\BusinessRules",
     "\\PSCMLib\\Collections",
     "\\PSCMLib\\Common",
-    "\\PSCMLib\\Wizards"
+    "\\PSCMLib\\SQLQuery",
+    "\\PSCMLib\\Wizards",
+    "\\Setup"
   ],
-  "SelectedNode": "\\PSCMLib\\Collections\\Add-CMDeviceToCollection.ps1",
+  "SelectedNode": "\\PSCMLib\\Wizards\\Request-CMMoveToDay.ps1",
   "PreviewInSolutionExplorer": false
 }

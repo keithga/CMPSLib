@@ -22,7 +22,7 @@ function Format-WAASStdErr {
 
 function Format-WAASStdDay  {
     param( $EnvName = '', $Season, $Day )
-    Format-WAASStdName -EnvName $EnvName -Season $Season -Name ('{0:d2}_PM' -f $Day)
+    Format-WAASStdName -EnvName $EnvName -Season $Season -Name ('Day_{0:d2}_8PM' -f $Day)
 }
 
 

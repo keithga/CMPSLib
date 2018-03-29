@@ -13,6 +13,7 @@ param(
     $hostname = 'cm1.corp.contoso.com',
     $Database = 'ConfigMGR_CHQ',
     $Path = "$env:temp\BusinessRules",
+    $PCNames1  = 'DTC00001*',
     $LogPath = "$env:userProfile\desktop\businessRules.log"
 )
 
@@ -227,7 +228,7 @@ describe 'Job 4 ready for scheduling to Day of...' {
         @{
             Systems = $MyDev1
             SourceCollection = $SourceName
-            TargetCollection = '15_PM'
+            TargetCollection = 'DAY_15_8PM'
             WaitUntil = [datetime]::now.AddDays(20)
         } | Export-Clixml -Path $TargetFile
 
@@ -249,7 +250,7 @@ describe 'Job 4 ready for scheduling to Day of...' {
         @{
             Systems = $MyDev1
             SourceCollection = $SourceName
-            TargetCollection = '15_PM'
+            TargetCollection = 'DAY_15_8PM'
             WaitUntil = [datetime]::now.AddDays(-1)
         } | Export-Clixml -Path $TargetFile -Force
 

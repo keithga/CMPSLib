@@ -124,7 +124,7 @@ Select the target Date for this batch of computers"
 
     }
 
-    $DateCOllection = "{0:d2}_PM'" -f $TargetDay.Day 
+    $DateCOllection = "DAY_{0:d2}_8PM'" -f $TargetDay.Day 
 
     #endregion
 

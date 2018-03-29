@@ -26,11 +26,11 @@ $Query = @"
     JOIN [dbo].[v_collection] col on adv.CollectionID = col.CollectionID
     JOIN [dbo].[v_R_System] sys on LKS.ResourceID = sys.ResourceID
     WHERE rn = 1 AND ExecutionTime > DATEADD(Day, -40, getdate()) 
-        AND col.Name LIKE '$(get-OSDW10Prefix)_%_PM'
+        AND col.Name LIKE '$(get-OSDW10Prefix)_%_8PM'
         AND LKS.LastStatusMessageID = 11143
 "@
 
-Write-Verbose ("Process OSD_W10_%_DAY_XX_PM to OSD_W10_%_Finished")
+Write-Verbose ("Process OSD_W10_%_DAY_XX_8PM to OSD_W10_%_Finished")
 $results = Invoke-SQLCMD -HostName $HostName -Database $Database -Query $Query
 $Results |     Move-CMDeviceToCollectionFromAny -CollectionPostFix Finished
 

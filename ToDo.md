@@ -10,9 +10,9 @@ Things that should be done for the final system:
 
 Logging
 
-## FUnctions
+## Functions
 
-### MOve from Anywhere to $Target
+### Move from Anywhere to $Target
 
 ## Wizards
 
@@ -45,3 +45,9 @@ TBD
 ## Error Handling
 
 TBD
+
+# Notes
+
+https://blogs.technet.microsoft.com/breben/2010/09/29/what-does-this-advertisement-status-message-mean/
+
+

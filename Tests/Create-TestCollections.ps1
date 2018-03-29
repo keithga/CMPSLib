@@ -33,37 +33,37 @@ OSD_W10_Fall_Ready_for_Scheduling_ENG
 OSD_W10_Fall_Ready_for_Scheduling_OPS
 OSD_W10_Fall_Ready_for_Scheduling_SEC
 
-OSD_W10_Fall_Day_01_PM
-OSD_W10_Fall_Day_02_PM
-OSD_W10_Fall_Day_03_PM
-OSD_W10_Fall_Day_04_PM
-OSD_W10_Fall_Day_05_PM
-OSD_W10_Fall_Day_06_PM
-OSD_W10_Fall_Day_07_PM
-OSD_W10_Fall_Day_08_PM
-OSD_W10_Fall_Day_09_PM
-OSD_W10_Fall_Day_10_PM
-OSD_W10_Fall_Day_11_PM
-OSD_W10_Fall_Day_12_PM
-OSD_W10_Fall_Day_13_PM
-OSD_W10_Fall_Day_14_PM
-OSD_W10_Fall_Day_15_PM
-OSD_W10_Fall_Day_16_PM
-OSD_W10_Fall_Day_17_PM
-OSD_W10_Fall_Day_18_PM
-OSD_W10_Fall_Day_19_PM
-OSD_W10_Fall_Day_20_PM
-OSD_W10_Fall_Day_21_PM
-OSD_W10_Fall_Day_22_PM
-OSD_W10_Fall_Day_23_PM
-OSD_W10_Fall_Day_24_PM
-OSD_W10_Fall_Day_25_PM
-OSD_W10_Fall_Day_26_PM
-OSD_W10_Fall_Day_27_PM
-OSD_W10_Fall_Day_28_PM
-OSD_W10_Fall_Day_29_PM
-OSD_W10_Fall_Day_30_PM
-OSD_W10_Fall_Day_31_PM
+OSD_W10_Fall_Day_01_8PM
+OSD_W10_Fall_Day_02_8PM
+OSD_W10_Fall_Day_03_8PM
+OSD_W10_Fall_Day_04_8PM
+OSD_W10_Fall_Day_05_8PM
+OSD_W10_Fall_Day_06_8PM
+OSD_W10_Fall_Day_07_8PM
+OSD_W10_Fall_Day_08_8PM
+OSD_W10_Fall_Day_09_8PM
+OSD_W10_Fall_Day_10_8PM
+OSD_W10_Fall_Day_11_8PM
+OSD_W10_Fall_Day_12_8PM
+OSD_W10_Fall_Day_13_8PM
+OSD_W10_Fall_Day_14_8PM
+OSD_W10_Fall_Day_15_8PM
+OSD_W10_Fall_Day_16_8PM
+OSD_W10_Fall_Day_17_8PM
+OSD_W10_Fall_Day_18_8PM
+OSD_W10_Fall_Day_19_8PM
+OSD_W10_Fall_Day_20_8PM
+OSD_W10_Fall_Day_21_8PM
+OSD_W10_Fall_Day_22_8PM
+OSD_W10_Fall_Day_23_8PM
+OSD_W10_Fall_Day_24_8PM
+OSD_W10_Fall_Day_25_8PM
+OSD_W10_Fall_Day_26_8PM
+OSD_W10_Fall_Day_27_8PM
+OSD_W10_Fall_Day_28_8PM
+OSD_W10_Fall_Day_29_8PM
+OSD_W10_Fall_Day_30_8PM
+OSD_W10_Fall_Day_31_8PM
 
 OSD_W10_Fall_Finished
 
@@ -94,7 +94,7 @@ Foreach ( $Season in $seasons ) {
     Foreach ( $Environment in $environments ) {
 
         Foreach ( $Day in 1..31 ) {
-            # 'OSD_W10{0}_{1}_Day_{2:d2}_PM' -f $Environment,$Season,$Day
+            # 'OSD_W10{0}_{1}_Day_{2:d2}_8PM' -f $Environment,$Season,$Day
             $List += Format-WAASStdDay -EnvName $environment -Season $Season -Day $Day
         }
 
