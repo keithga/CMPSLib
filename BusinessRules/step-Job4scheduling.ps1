@@ -16,7 +16,7 @@ if(-not (Get-Module PSCMLib)) { throw "missing $PSScriptRoot\..\PSCMLib" }
 
 foreach ( $File in get-childitem $Path\ScheduleDay\*.clixml ) {
 
-    Write-ToLog "File(Del): $($File.FullName)"
+    Write-Verbose "File(Del): $($File.FullName)"
     $removeFile = $True
     $ErrorFile = $False
 
@@ -25,18 +25,18 @@ foreach ( $File in get-childitem $Path\ScheduleDay\*.clixml ) {
 
         try {
             if ( $ProcessItem.SourceCollection -notmatch 'Ready_For_Scheduling' ) {
-                write-ToLog "`tBad Source Collection: $ProcessItem.SourceCollection"
+                write-Verbose "`tBad Source Collection: $ProcessItem.SourceCollection"
                 $ErrorFile = $True
                 break
             }
             if ( $ProcessItem.TargetCollection -notmatch 'DAY_[0-9][0-9]_8PM' ) {
-                write-ToLog "`tBad Target Collection: $ProcessItem.TargetCollection"
+                write-Verbose "`tBad Target Collection: $ProcessItem.TargetCollection"
                 $ErrorFile = $True
                 break
             }
             If ( $ProcessItem.WaitUntil ) {
                 If ( $ProcessItem.WaitUntil -gt [datetime]::now ) {
-                    write-ToLog "`tNot Time Yet: $ProcessItem.WaitUntil"
+                    write-Verbose "`tNot Time Yet: $ProcessItem.WaitUntil"
                     $removeFile = $False
                     break
                 }

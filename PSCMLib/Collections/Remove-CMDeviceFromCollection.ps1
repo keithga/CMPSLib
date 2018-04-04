@@ -51,6 +51,7 @@ Function Remove-CMDeviceFromCollection {
         [string]    $ComputerName,
         [string]    $SiteCode,
         [pscredential]$Credential,
+        [switch]    $SkipLog,
 
         [switch] $PassThru
     )
@@ -100,6 +101,7 @@ Function Remove-CMDeviceFromCollection {
 
         $InParams.CollectionRules += $Rules.psobject.BaseOBject
         if ( $pscmdlet.ShouldProcess("$Rules", "Remove") ) { 
+            if ( -not $skipLog ) { write-toLog ( "Del,$($CollectionQuery.Name),,$($Rules.RuleName -join ' ')" ) }
             $CollectionQuery.PSBase.InvokeMethod('DeleteMembershipRules',$InParams,$null) | Out-String -Width 200 | Write-Verbose
             $CollectionQuery.RequestRefresh() | Out-String -Width 200 | write-verbose
         }

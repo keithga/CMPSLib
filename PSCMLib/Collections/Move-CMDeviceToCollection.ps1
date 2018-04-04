@@ -48,23 +48,29 @@ function Move-CMDeviceToCollection {
         if ( $MySystem.Count -gt 0 ) {
 
             Write-Verbose "Remove From $CollectionName $CollectionID"
+
             if ( $CollectionName ) {
-                Remove-CMDeviceFromCollection -CollectionName $CollectionName -System $MySystem
+                $removedFrom = $CollectionName
+                Remove-CMDeviceFromCollection -CollectionName $CollectionName -System $MySystem -skipLog
             }
             else {
-                Remove-CMDeviceFromCollection -CollectionID $CollectionID -System $MySystem
+                $removedFrom = $CollectionID
+                Remove-CMDeviceFromCollection -CollectionID $CollectionID -System $MySystem -skipLog
             }
 
             Write-Verbose "Write to $DestCollectionName $DestCollectionID"
             if ( $DestCollectionName ) {
-                Add-CMDeviceToCollection -CollectionName $DestCollectionName -System $MySystem
+                write-toLog ( "Mov,$RemovedFrom,$DestCollectionName,$($MySystem.Name -join ' ')" )
+                Add-CMDeviceToCollection -CollectionName $DestCollectionName -System $MySystem -skipLog
             }
             elseif ( $DestCollectionPostFix ) {
                 $NewTargetCollection = Get-CMCollectionBusinessName -Name $CollectionName -PostFix $DestCollectionPostFix
-                Add-CMDeviceToCollection -CollectionName $NewTargetCollection -System $MySystem
+                write-toLog ( "Mov,$RemovedFrom,$NewTargetCollection,$($MySystem.Name -join ' ')" )
+                Add-CMDeviceToCollection -CollectionName $NewTargetCollection -System $MySystem -skipLog
             }
             else {
-                Add-CMDeviceToCollection -CollectionID $DestCollectionID -System $MySystem
+                write-toLog ( "Mov,$RemovedFrom,$DestCollectionID,$($MySystem.Name -join ' ')" )
+                Add-CMDeviceToCollection -CollectionID $DestCollectionID -System $MySystem -skipLog
             }
 
         }

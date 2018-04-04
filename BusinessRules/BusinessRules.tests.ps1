@@ -76,6 +76,7 @@ $Found | Group -Property CollectionName |
     ForEach-Object { Start-WaitForCount -CollName $_.Name -Count 0 }
 
 if ( test-path $Path ) { remove-item -Path $path -Recurse -force -ErrorAction SilentlyContinue } 
+if ( test-path $logPath ) { remove-item -Path $logPath -Recurse -force -ErrorAction SilentlyContinue } 
 
 
 ###########################

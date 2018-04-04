@@ -11,6 +11,6 @@
     "\\PSCMLib\\Wizards",
     "\\Tests"
   ],
-  "SelectedNode": "\\BusinessRules\\step-Job5DailyCleenup.ps1",
+  "SelectedNode": "\\PSCMLib\\Wizards\\Request-CMMoveToDay.ps1",
   "PreviewInSolutionExplorer": false
 }

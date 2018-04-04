@@ -15,7 +15,7 @@ if(-not (Get-Module PSCMLib)) { throw "missing $PSScriptRoot\..\PSCMLib" }
 
 foreach ( $File in get-childitem $Path\RemoveItems\*.clixml ) {
 
-    Write-ToLog "File(Del): $($File.FullName)"
+    Write-Verbose "File(Del): $($File.FullName)"
     $removeFile = $True
     $ErrorFile = $False
 

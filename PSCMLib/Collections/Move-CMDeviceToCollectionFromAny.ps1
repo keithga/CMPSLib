@@ -30,39 +30,31 @@ function Move-CMDeviceToCollectionFromAny {
         $MySystem = @()
     }
     process {
-        if ( $CollectionName ) {
-            $MySystem += $AnySystem | ? CollectionName -NE $CollectionName
+        if ( $CollectionID ) {
+            $MySystem += $AnySystem | ? CollectionID -NE $CollectionID
         }
         elseif ( $CollectionPostFix ) {
             $MySystem += $AnySystem | ? { -not $_.COllectionName.EndsWith($CollectionPostFix) } 
         }
         else {
-            $MySystem += $AnySystem | ? CollectionID -NE $CollectionID
+            $MySystem += $AnySystem | ? CollectionName -NE $CollectionName
         }
     }
     end {
         if ( $MySystem.Count -gt 0 ) {
-
-            Write-Verbose "Remove From ANY $($MySystem.Count)"
-            Remove-CMDeviceFromAnyCollection -AnySystem $MySystem
-
-            Write-Verbose "Write to $CollectionName $CollectionID"
-            if ( $CollectionName ) {
-                # although tecnically -System and $AnySytem are different types, it works here, only use Name and ResourceID
-                Add-CMDeviceToCollection -CollectionName $CollectionName -System $MySystem
-            }
-            elseif ( $CollectionPostFix ) {
-                $MySystem |
-                    Group-Object -Property CollectionName | 
-                    ForEach-Object {
-                        $NewTargetCollection = Get-CMCollectionBusinessName -Name $_.Name -PostFix $CollectionPostFix
-                        $_.Group | Add-CMDeviceToCollection -CollectionName $NewTargetCollection
+            $MySystem |
+                Group-Object -Property CollectionName | 
+                ForEach-Object {
+                    if ( $CollectionName ) {
+                        $_.Group | Move-CMDeviceToCollection -CollectionName $_.Name -DestCollectionName $CollectionName
                     }
-
-            }
-            else {
-                Add-CMDeviceToCollection -CollectionID $CollectionID -System $MySystem
-            }
+                    elseif ( $CollectionPostFix ) {
+                        $_.Group | Move-CMDeviceToCollection -CollectionName $_.Name -DestCollectionPostFix $CollectionPostFix
+                    }
+                    else {
+                        $_.Group | Move-CMDeviceToCollection -CollectionID $_.Group[0].CollectionID -DestCollectionID $CollectionID
+                    }
+                }
 
         }
     }

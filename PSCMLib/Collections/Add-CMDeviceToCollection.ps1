@@ -52,6 +52,7 @@ Function Add-CMDeviceToCollection {
         [string]    $ComputerName,
         [string]    $SiteCode,
         [pscredential]$Credential,
+        [switch]    $SkipLog,
 
         [switch] $PassThru
 
@@ -103,6 +104,7 @@ Function Add-CMDeviceToCollection {
 
         $InParams.CollectionRules += $Rules.psobject.BaseOBject
         if( $pscmdlet.ShouldProcess("$Rules", "AddDevice") ) { 
+            if ( -not $skipLog ) { write-toLog ( "ADD,,$($CollectionQuery.Name),$($Rules.RuleName -join ' ')" ) }
             $CollectionQuery.PSBase.InvokeMethod('AddMembershipRules',$InParams,$null) | out-string -Width 200 | write-verbose
             $CollectionQuery.RequestRefresh() | out-string -Width 200 | write-verbose
         }
