@@ -9,7 +9,9 @@ function Request-CMMoveToDay {
 
         [dateTime] $TargetDay,
 
-        [int]      $Limit = 20,
+        [int]      $Limit,
+
+        [switch] $Manual,
 
         [parameter(Mandatory=$false)]
         [string]   $Path
@@ -84,7 +86,7 @@ If this is not your approved Business Unit, exit now.
     #endregion
 
     #region Find Systems
-    
+
     write-host "`r`n`r`n Searching [$SourceCollection] ..."
 
     $SrcColl = get-CMCollection -name $SourceCollection
@@ -102,16 +104,33 @@ If this is not your approved Business Unit, exit now.
         }
         $Systems = Get-CMDeviceFromTwoCollections -CollectionID $SrcColl.CollectionID -StripeCollectionID $StripeColl.CollectionID
     }
+    elseif ( $Limit )  {
+         $Systems = Get-CMDevice -CollectionID $SrcColl.CollectionID | Select -first $Limit
+    }
+    elseif ( $Manual ) {
+        Clear-Host 
+        Write-Host "Manual Selection of systems (use ctrl key to select more than one)"
+         $Systems = Get-CMDevice -CollectionID $SrcColl.CollectionID |  Select-Object -Property ResourceID,Name,SiteCode | Out-GridView -OutputMode Multiple 
+    }
     else {
-         $Systems = Get-CMDevice -CollectionID $SrcColl.CollectionID 
+        $Systems = Get-CMDevice -CollectionID $SrcColl.CollectionID
+
+        if ( $Systems.count -gt 20 ) {
+            Write-Host @"
+Found more than $($Systems.Count) number of devices, 
+Choose the NUMBER Of machines to schedule for day.
+
+"@
+            $NewLimit = Read-Host
+            $Systems = $Systems | Select-Object -First $NewLimit
+        }
     }
 
-    Clear-Host 
+    Clear-Host
     $host.ui.RawUI.WindowTitle = "Find Systems"
     Write-Host "`r`nFound Systems  (Count: $($Systems.Count)):"
-    $Systems |  Select-Object -Property ResourceID,Name,SiteCode | Select -first $Limit | Out-GridView
-    if ( $Systems.COunt -gt $Limit ) {  Write-Host "{only first $Limit are shown}" }
-
+    $Systems |  Select-Object -Property ResourceID,Name,SiteCode | Out-GridView
+    if ( $Limit -and $Systems.Count -gt $Limit ) {  Write-Host "{only first $Limit are shown}" }
 
     if ( -not ( $TargetDay ) ) {
         Wait-ForUserConfirmation
