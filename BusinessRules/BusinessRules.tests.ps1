@@ -110,6 +110,83 @@ describe 'verify environment' {
 
 ###########################
 
+
+
+describe 'Job 1 PreAssess Group to PreAssess - Mock' {
+
+    $SourceName = Format-WAASPreAssessGroup -Season 'Fall' -Group 'ENG'
+    $TargetName = Format-WAASStdName -Season 'Fall' -Name 'Preassessment'
+    write-host "From: $SourceName    To: $TargetName"
+
+    it 'add  PreAssess Group mock' {
+        Start-WaitForCount -CollName $SourceName -Count 0 | out-null
+        $MyDev1 | Add-CMDeviceToCollection -CollectionName $SourceName -whatif
+        Start-WaitForCount -CollName $SourceName -count 0 | should be 0
+    }
+
+    it 'add  PreAssess Group' {
+        Start-WaitForCount -CollName $SourceName -Count 0 | out-null
+        $MyDev1 | Add-CMDeviceToCollection -CollectionName $SourceName
+        Start-WaitForCount -CollName $SourceName -count 10 | should be 10
+    }
+
+    it 'remove all mock' {
+        $MyDev1 | Remove-CMDeviceFromCollection -CollectionName $SourceName -whatif
+        Start-WaitForCount -CollName $SourceName -count 10 | out-null
+    }
+
+    it 'remove all' {
+        Remove-CMAllDevicesFromCollection -CollectionName $SourceName
+        Start-WaitForCount -CollName $SourceName -count 0 | out-null
+    }
+
+}
+
+describe 'Job 4a ready for scheduling to Day of... mock' {
+
+    $SourceName = Format-WAASStdName -Season 'Fall' -Name 'Ready_For_Scheduling'
+    $TargetName = Format-WAASStdDay -Season 'Fall' -Day 15
+    $TargetFile = join-path $Path\ScheduleDay ([guid]::NewGuid().ToString() + '.clixml')
+
+    write-host "From: $SourceName    To: $TargetName"
+
+    it 'add  source Group' {
+        Start-WaitForCount -CollName $SourceName -Count 0 | out-null
+        Start-WaitForCount -CollName $TargetName -Count 0 | out-null
+        $MyDev1 | Add-CMDeviceToCollection -CollectionName $SourceName
+        Start-WaitForCount -CollName $SourceName -count 10 | should be 10
+    }
+
+    it 'Go Time' {
+        remove-item $path -ErrorAction SilentlyContinue -Recurse -Force | out-null
+        new-item -ItemType directory -Path $path\ScheduleDay -erroraction SilentlyContinue | out-null
+
+        @{
+            Systems = $MyDev1
+            SourceCollection = $SourceName
+            TargetCollection = 'DAY_15_8PM'
+            WaitUntil = [datetime]::now.AddDays(-1)
+        } | Export-Clixml -Path $TargetFile -Force
+
+    }
+
+    it 'Run Job4b' {
+
+        { & $PSScriptRoot\step-Job4scheduling.ps1 @MyArgs -whatif } | should not throw
+        Start-WaitForCount -CollName $SourceName -Count 10| should be 10
+        Start-WaitForCount -CollName $TargetName -Count 0| should be 0
+
+        test-path $TargetFile | should be $true
+    }
+
+    it 'remove all' {
+        Remove-CMAllDevicesFromCollection -CollectionName $SourceName
+        Start-WaitForCount -CollName $SourceName -count 0 | out-null
+    }
+
+}
+
+
 describe 'Job 1 PreAssess Group to PreAssess' {
 
     $SourceName = Format-WAASPreAssessGroup -Season 'Fall' -Group 'ENG'

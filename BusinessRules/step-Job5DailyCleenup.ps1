@@ -32,5 +32,5 @@ $Query = @"
 
 Write-Verbose ("Process OSD_W10_%_DAY_XX_8PM to OSD_W10_%_Finished")
 $results = Invoke-SQLCMD -HostName $HostName -Database $Database -Query $Query
-$Results |     Move-CMDeviceToCollectionFromAny -CollectionPostFix Finished
+$Results |     Move-CMDeviceToCollectionFromAny -CollectionPostFix Finished -WhatIf:([bool]$WhatIfPreference.IsPresent)
 

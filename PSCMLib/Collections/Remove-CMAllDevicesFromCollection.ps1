@@ -20,5 +20,5 @@ Function Remove-CMAllDevicesFromCollection {
 
     )
 
-    Get-CMDevice @PSBoundParameters | Remove-CMDeviceFromCollection @PSBoundParameters
+    Get-CMDevice @PSBoundParameters | Remove-CMDeviceFromCollection @PSBoundParameters -WhatIf:([bool]$WhatIfPreference.IsPresent)
 }

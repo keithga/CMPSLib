@@ -46,13 +46,13 @@ function Move-CMDeviceToCollectionFromAny {
                 Group-Object -Property CollectionName | 
                 ForEach-Object {
                     if ( $CollectionName ) {
-                        $_.Group | Move-CMDeviceToCollection -CollectionName $_.Name -DestCollectionName $CollectionName
+                        $_.Group | Move-CMDeviceToCollection -CollectionName $_.Name -DestCollectionName $CollectionName -WhatIf:([bool]$WhatIfPreference.IsPresent)
                     }
                     elseif ( $CollectionPostFix ) {
-                        $_.Group | Move-CMDeviceToCollection -CollectionName $_.Name -DestCollectionPostFix $CollectionPostFix
+                        $_.Group | Move-CMDeviceToCollection -CollectionName $_.Name -DestCollectionPostFix $CollectionPostFix -WhatIf:([bool]$WhatIfPreference.IsPresent)
                     }
                     else {
-                        $_.Group | Move-CMDeviceToCollection -CollectionID $_.Group[0].CollectionID -DestCollectionID $CollectionID
+                        $_.Group | Move-CMDeviceToCollection -CollectionID $_.Group[0].CollectionID -DestCollectionID $CollectionID -WhatIf:([bool]$WhatIfPreference.IsPresent)
                     }
                 }
 

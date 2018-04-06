@@ -30,5 +30,5 @@ $Query = @"
 
 Write-Verbose ("Process OSD_W10_%_Precache_Compat_Scan to OSD_W10_*_Ready_For_Scheduling")
 Invoke-SQLCMD -HostName $HostName -Database $Database -Query $Query | 
-    Move-CMDeviceToCollectionFromAny -CollectionPostFix Ready_For_Scheduling
+    Move-CMDeviceToCollectionFromAny -CollectionPostFix Ready_For_Scheduling -WhatIf:([bool]$WhatIfPreference.IsPresent)
 

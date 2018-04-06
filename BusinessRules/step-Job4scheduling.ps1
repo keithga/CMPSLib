@@ -43,8 +43,8 @@ foreach ( $File in get-childitem $Path\ScheduleDay\*.clixml ) {
             }
 
             $ProcessItem | Foreach-Object Systems |
-                Get-CMDeviceFromAnyCollection | 
-                Move-CMDeviceToCollection -CollectionName ($ProcessItem.SourceCollection) -DestCollectionPostFix ($ProcessItem.TargetCollection)
+                Get-CMDeviceFromAnyCollection  | 
+                Move-CMDeviceToCollection -CollectionName ($ProcessItem.SourceCollection) -DestCollectionPostFix ($ProcessItem.TargetCollection) -WhatIf:([bool]$WhatIfPreference.IsPresent)
         }
         catch {
             $ErrorFile = $True

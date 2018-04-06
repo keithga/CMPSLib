@@ -11,6 +11,6 @@
     "\\PSCMLib\\Wizards",
     "\\Tests"
   ],
-  "SelectedNode": "\\PSCMLib\\Wizards\\Request-CMMoveToDay.ps1",
+  "SelectedNode": "\\PSCMLib\\Collections\\Add-CMDeviceToCollection.ps1",
   "PreviewInSolutionExplorer": false
 }

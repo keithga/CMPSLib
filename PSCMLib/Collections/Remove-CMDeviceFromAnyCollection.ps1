@@ -46,7 +46,7 @@ This script will group the collections, and remove each item for each group in b
         $AnySystem |
             Group-Object -Property CollectionID | 
             ForEach-Object {
-                $_.Group | Remove-CMDeviceFromCollection -CollectionID $_.Name
+                $_.Group | Remove-CMDeviceFromCollection -CollectionID $_.Name -WhatIf:([bool]$WhatIfPreference.IsPresent)
             }
     }
 

@@ -24,7 +24,7 @@ foreach ( $File in get-childitem $Path\RemoveItems\*.clixml ) {
         try {
             $ProcessItem | Foreach-Object Systems |
             Get-CMDeviceFromAnyCollection | 
-            Remove-CMDeviceFromAnyCollection
+            Remove-CMDeviceFromAnyCollection -WhatIf:([bool]$WhatIfPreference.IsPresent)
 
         }
         catch {
