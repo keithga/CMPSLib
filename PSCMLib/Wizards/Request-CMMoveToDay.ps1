@@ -226,7 +226,7 @@ One final verification before submitting the request to the Background service:
         SourceCollection = $SrcColl.Name
         StripeCollection = $StripeColl.Name
         TargetCollection = $DateCOllection 
-        Systems = $Systems | Select -First $Limit -Property Name,ResourceID
+        Systems = $Systems | Select -Property Name,ResourceID
     } | Export-Clixml -Path $CLIXMLFile
 
     ############################
