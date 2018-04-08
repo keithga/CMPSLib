@@ -1,16 +1,16 @@
 {
   "ExpandedNodes": [
     "",
-    "\\BusinessActions",
     "\\BusinessQueries",
     "\\BusinessRules",
     "\\PSCMLib",
     "\\PSCMLib\\BusinessRules",
-    "\\PSCMLib\\Collections",
     "\\PSCMLib\\Common",
     "\\PSCMLib\\SQLQuery",
-    "\\PSCMLib\\Wizards"
+    "\\PSCMLib\\Wizards",
+    "\\Setup",
+    "\\Tests"
   ],
-  "SelectedNode": "\\PSCMLib\\BusinessRules\\Get-CMCollectionBusinessName.ps1",
+  "SelectedNode": "\\BusinessRules\\step-Job6Cancel.ps1",
   "PreviewInSolutionExplorer": false
 }

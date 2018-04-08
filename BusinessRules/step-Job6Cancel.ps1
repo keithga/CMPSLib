@@ -13,6 +13,7 @@ param(
 
 if(-not (Get-Module PSCMLib)) { throw "missing $PSScriptRoot\..\PSCMLib" }
 
+write-verbose "Dir: FileSystem::$Path\MoveToDay\*\*.clixml"
 foreach ( $File in get-childitem FileSystem::$Path\RemoveItems\*\*.clixml -Exclude Error,Done ) {
 
     Write-Verbose "File: $($File.FullName)"
@@ -24,19 +25,21 @@ foreach ( $File in get-childitem FileSystem::$Path\RemoveItems\*\*.clixml -Exclu
         try {
 
             if ( Test-Path "$PSScriptRoot\Test-XMLSecurity.ps1" ) {
-                if ( -not ( & "$PSScriptRoot\Test-XMLSecurity.ps1" -path $File ) ) {
+                if ( -not ( & "$PSScriptRoot\Test-XMLSecurity.ps1" -path FileSystem::$File ) ) {
                     Write-Verbose "`tBad Security Check $($File.FullName)"
-                    $ErrorFile = $False
+                    $ErrorFile = $True
                     Break
                 }
             }
 
-            $ProcessItem | Foreach-Object Systems |
+            $ProcessItem | Foreach-Object Systems -whatif:$False |
                 Get-CMDeviceFromAnyCollection | 
                 Remove-CMDeviceFromAnyCollection -WhatIf:([bool]$WhatIfPreference.IsPresent)
 
         }
         catch {
+            Write-Error $_.Exception.Message
+            Write-Error $_.Exception.ItemName
             $errorFile = $true
         }
     }
