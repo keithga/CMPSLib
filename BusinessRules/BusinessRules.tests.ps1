@@ -146,7 +146,7 @@ describe 'Job 4a ready for scheduling to Day of... mock' {
 
     $SourceName = Format-WAASStdName -Season 'Fall' -Name 'Ready_For_Scheduling'
     $TargetName = Format-WAASStdDay -Season 'Fall' -Day 15
-    $TargetFile = join-path $Path\ScheduleDay ([guid]::NewGuid().ToString() + '.clixml')
+    $TargetFile = join-path $Path\MoveToDay\GUID ([guid]::NewGuid().ToString() + '.clixml')
 
     write-host "From: $SourceName    To: $TargetName"
 
@@ -159,7 +159,7 @@ describe 'Job 4a ready for scheduling to Day of... mock' {
 
     it 'Go Time' {
         remove-item $path -ErrorAction SilentlyContinue -Recurse -Force | out-null
-        new-item -ItemType directory -Path $path\ScheduleDay -erroraction SilentlyContinue | out-null
+        new-item -ItemType directory -Path (Split-Path $TargetFile) -erroraction SilentlyContinue | out-null
 
         @{
             Systems = $MyDev1
@@ -288,7 +288,7 @@ describe 'Job 4 ready for scheduling to Day of...' {
 
     $SourceName = Format-WAASStdName -Season 'Fall' -Name 'Ready_For_Scheduling'
     $TargetName = Format-WAASStdDay -Season 'Fall' -Day 15
-    $TargetFile = join-path $Path\ScheduleDay ([guid]::NewGuid().ToString() + '.clixml')
+    $TargetFile = join-path $Path\MoveToDay\GUID ([guid]::NewGuid().ToString() + '.clixml')
 
     write-host "From: $SourceName    To: $TargetName"
 
@@ -301,7 +301,7 @@ describe 'Job 4 ready for scheduling to Day of...' {
 
     it 'Too Far in the future' {
         remove-item $path -ErrorAction SilentlyContinue -Recurse -Force | out-null
-        new-item -ItemType directory -Path $path\ScheduleDay -erroraction SilentlyContinue | out-null
+        new-item -ItemType directory -Path (Split-Path $TargetFile) -erroraction SilentlyContinue | out-null
 
         @{
             Systems = $MyDev1
@@ -323,7 +323,7 @@ describe 'Job 4 ready for scheduling to Day of...' {
 
     it 'Go Time' {
         remove-item $path -ErrorAction SilentlyContinue -Recurse -Force | out-null
-        new-item -ItemType directory -Path $path\ScheduleDay -erroraction SilentlyContinue | out-null
+        new-item -ItemType directory -Path (Split-Path $TargetFile) -erroraction SilentlyContinue | out-null
 
         @{
             Systems = $MyDev1

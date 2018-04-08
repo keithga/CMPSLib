@@ -14,14 +14,13 @@ param(
 
 if(-not (Get-Module PSCMLib)) { throw "missing $PSScriptRoot\..\PSCMLib" }
 
-foreach ( $File in get-childitem $Path\ScheduleDay\*.clixml ) {
+foreach ( $File in get-childitem FileSystem::$Path\MoveToDay\*\*.clixml -Exclude Error,Done ) {
 
-    Write-Verbose "File(Del): $($File.FullName)"
+    Write-Verbose "File: $($File.FullName)"
     $removeFile = $True
     $ErrorFile = $False
 
-    foreach ( $ProcessItem in Import-Clixml $file ) {
-        # ToDo - Verify SourceColl
+    foreach ( $ProcessItem in Import-Clixml FileSystem::$file ) {
 
         try {
             if ( $ProcessItem.SourceCollection -notmatch 'Ready_For_Scheduling' ) {
@@ -42,6 +41,14 @@ foreach ( $File in get-childitem $Path\ScheduleDay\*.clixml ) {
                 }
             }
 
+            if ( Test-Path "$PSScriptRoot\Test-XMLSecurity.ps1" ) {
+                if ( -not ( & "$PSScriptRoot\Test-XMLSecurity.ps1" -path $File ) ) {
+                    Write-Verbose "`tBad Security Check $($File.FullName)"
+                    $ErrorFile = $False
+                    Break
+                }
+            }
+
             $ProcessItem | Foreach-Object Systems |
                 Get-CMDeviceFromAnyCollection  | 
                 Move-CMDeviceToCollection -CollectionName ($ProcessItem.SourceCollection) -DestCollectionPostFix ($ProcessItem.TargetCollection) -WhatIf:([bool]$WhatIfPreference.IsPresent)
@@ -52,12 +59,12 @@ foreach ( $File in get-childitem $Path\ScheduleDay\*.clixml ) {
     }
 
     if ( $ErrorFile ) {
-        new-item -ItemType directory -path $Path\ScheduleDay\Error -ErrorAction SilentlyContinue | Out-Null
-        move-item $File -Destination $Path\ScheduleDay\Error -ErrorAction SilentlyContinue 
+        new-item -ItemType directory -path FileSystem::$Path\MoveToDay\Error -ErrorAction SilentlyContinue | Out-Null
+        move-item FileSystem::$File -Destination FileSystem::$Path\MoveToDay\Error -ErrorAction SilentlyContinue 
     }
     elseif ( $removeFile ) {
-        new-item -ItemType directory -path $Path\ScheduleDay\Done -ErrorAction SilentlyContinue | Out-Null
-        MOve-Item -Path $File -Destination $Path\ScheduleDay\Done -ErrorAction SilentlyContinue -Force | out-null
+        new-item -ItemType directory -path FileSystem::$Path\MoveToDay\Done -ErrorAction SilentlyContinue | Out-Null
+        MOve-Item -Path FileSystem::$File -Destination FileSystem::$Path\MoveToDay\Done -ErrorAction SilentlyContinue -Force | out-null
     }
 
 }
