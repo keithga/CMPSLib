@@ -1,6 +1,7 @@
 {
   "ExpandedNodes": [
     "",
+    "\\BusinessActions",
     "\\BusinessQueries",
     "\\BusinessRules",
     "\\PSCMLib",
@@ -8,9 +9,8 @@
     "\\PSCMLib\\Collections",
     "\\PSCMLib\\Common",
     "\\PSCMLib\\SQLQuery",
-    "\\PSCMLib\\Wizards",
-    "\\Tests"
+    "\\PSCMLib\\Wizards"
   ],
-  "SelectedNode": "\\BusinessRules\\step-Job1Start.ps1",
+  "SelectedNode": "\\PSCMLib\\BusinessRules\\Get-CMCollectionBusinessName.ps1",
   "PreviewInSolutionExplorer": false
 }
