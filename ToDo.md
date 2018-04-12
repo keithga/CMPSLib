@@ -1,5 +1,20 @@
 ﻿# Ready
 
+## ChHanges:
+
+### Import WIzard
+* Method 1 - Type the computer names directly into the wizard.
+* Method 2 - Import by passing a txt file with computer names on the command line to the CMD file
+* Method 3 - Pass a collection name in via the command line: 
+    import.cmd -collection My_Collection_Name
+
+### Scheduling Wizard
+
+* Method 1 - When there are stripes, it will use the stripe
+* Method 2 - When a txt file is passed in on the cmdline, it will use that list of machines.
+* Method 3 - WHen there are less than 5 machines in ready for scheduling it will just show the list
+* Method 4 - If there are MORE than 5 machines in ready for scheduling, it will ask you for the list of machines in the notepad.
+
 ## Wizards
 ### Add Device to Collection
 ### Remove Device from Process

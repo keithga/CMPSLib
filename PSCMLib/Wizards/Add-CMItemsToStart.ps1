@@ -1,15 +1,15 @@
 function Add-CMItemsToStart {
 
-    [cmdletbinding(DefaultParametersetname="Computer")]
+    [cmdletbinding(DefaultParametersetname="File")]
     param(
 
         [parameter(Mandatory=$false, Position=0, ParameterSetName="File")]
         [string]    $InputFile,
         [parameter(Mandatory=$false, Position=0, ParameterSetName="Computer")]
         [string[]]  $ComputerName,
-
         [parameter(Mandatory=$false, Position=0, ParameterSetName="Collection")]
         [string]    $Collection,
+
 
         [parameter(Mandatory=$true, ParameterSetName="File")]
         [parameter(Mandatory=$true, ParameterSetName="Computer")]
@@ -84,52 +84,7 @@ If this is not your approved Target Collection, exit now.
 
     #endregion
 
-    #region Wizard Page - Import Options
-
-    $result = $null
-    if ( -not ( $InputFile -or $ComputerName  -or $Collection ) ) { 
-
-        clear-host
-        # $host.ui.RawUI.WindowTitle = "Import Options"
-
-        Write-Host @"
-
-Choose an option for importing the list of computers into Configuration Manager
-
-"@
-
-        $List = @()
-        $List += New-Object System.Management.Automation.Host.ChoiceDescription "Import Computer List from &File...", ""
-        $List += New-Object System.Management.Automation.Host.ChoiceDescription "Import Computer List from &Clipboard", ""
-        $List += New-Object System.Management.Automation.Host.ChoiceDescription "Import Computer List from &SCCM Collection...", ""
-
-        $result = $host.ui.PromptForChoice("Import Options",$null,$List, 0) 
-    }
-
-    #endregion
-
     #region Wizard Page - Select Computers - File
-
-    if ( $result -eq 0 -and ( -not $InputFile ) ) {
-
-        Clear-Host 
-        $host.ui.RawUI.WindowTitle = "   Add From File"
-        Write-Host @"
-
-Select a *.txt or *.csv file containing a list of computers to import.
-
-"@
-
-        $fields = new-object "System.Collections.ObjectModel.Collection``1[[System.Management.Automation.Host.FieldDescription]]"
-
-        $f = New-Object System.Management.Automation.Host.FieldDescription "File List"
-        $f.SetparameterType( [System.IO.FileInfo] )
-        $fields.Add($f)
-
-        $file = $Host.UI.Prompt( "", "", $fields )
-        $InputFile = $file.Values | select-object -First 1 | ? { Test-Path $_ }
-
-    }
 
     if ( $InputFile ) {
         if ( get-item  $InputFile | ? Extension -eq '.txt' ) {
@@ -142,42 +97,26 @@ Select a *.txt or *.csv file containing a list of computers to import.
 
     #endregion
 
-    #region Wizard Page - Select Computers - Clipboard
+    #region Wizard Page - Import Options
 
-    if ( $result -eq 1 ) {
-        Clear-Host 
-        $host.ui.RawUI.WindowTitle = "   Add from Clipboard"
-        Write-Host @"
+    $result = $null
+    if ( -not ( $InputFile -or $ComputerName -or $Collection ) ) { 
 
-Now ready to import computers from the clipboard
+        clear-host
+        # $host.ui.RawUI.WindowTitle = "Import Computers"
 
-"@
+        Write-Host "Please input the list of computers, in the box below, one computername per line:`r`n(Press Next to continue)"
 
-        Wait-ForUserConfirmation
+        [PowerShell_Wizard_Host.PSHostCallBack]::ForceMultilineOnReadLine(20)   # Hack
 
-        $ComputerName = get-clipboard | %{ $_ -split "`r`n" }
+        $ComputerName = ( Read-Host ).Trim("`r`n") -Split "`r`n" | ? { -not [string]::IsNullOrEmpty($_) }
 
-    }
-
-    #endregion
-
-    #region Wizard Page - Select Computers - Collection
-
-    if ( $result -eq 2 ) {
-        Clear-Host 
-        $host.ui.RawUI.WindowTitle = "   Add from Collection"
-        Write-Host @"
-
-Start the installation from an existing collection
-
-"@
-
-        $Collection = Read-Host "Name:" | ? { -not [string]::IsNullOrEmpty($_) }
+        $ComputerName | Write-verbose 
+        Write-Host "Found [$($ComputerName.Count)]"
 
     }
 
     #endregion
-
 
     #region Confirmation
 
@@ -189,7 +128,6 @@ Start the installation from an existing collection
     }
     elseif ( $ComputerName ) {
         $Systems = $ComputerName | %{ get-CMDeviceObject -Name $_ }
-
     }
     else {
         throw "[10] No Computers found for addition!"
@@ -197,7 +135,7 @@ Start the installation from an existing collection
 
     Clear-Host 
     $host.ui.RawUI.WindowTitle = "Verify"
-    Write-Host "`r`nFound Systems  (Count: $($Systems.Count)):"
+    Write-Host "`r`nVERIFY!`r`n`r`nFound Systems  (Count: $($Systems.Count)):"
     $Systems |  Select-Object -Property ResourceID,Name,SiteCode,ResourceType | Out-GridView
 
     #########################

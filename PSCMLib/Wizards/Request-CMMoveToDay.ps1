@@ -2,18 +2,17 @@ function Request-CMMoveToDay {
 
     [cmdletbinding()]
     param(
-        [parameter(Mandatory=$true)]
+        [parameter(Mandatory=$false, Position=0)]
+        [string]    $InputFile,
+
+        [string[]]  $ComputerName,
+
         [string]   $SourceCollection,
 
         [string]   $StripeCollection,
 
         [dateTime] $TargetDay,
 
-        [int]      $Limit,
-
-        [switch] $Manual,
-
-        [parameter(Mandatory=$false)]
         [string]   $Path
 
     )
@@ -51,7 +50,7 @@ $(if ($StripeCollection) { "    Stripe: [$StripeCollection]  (Optional)" })
 
 If this is not your approved Business Unit, exit now.
 
-
+$INputFile
 
 
 
@@ -104,39 +103,65 @@ If this is not your approved Business Unit, exit now.
         }
         $Systems = Get-CMDeviceFromTwoCollections -CollectionID $SrcColl.CollectionID -StripeCollectionID $StripeColl.CollectionID
     }
-    elseif ( $Limit )  {
-         $Systems = Get-CMDevice -CollectionID $SrcColl.CollectionID | Select -first $Limit
-    }
-    elseif ( $Manual ) {
-        Clear-Host 
-        Write-Host "Manual Selection of systems (use ctrl key to select more than one)"
-         $Systems = Get-CMDevice -CollectionID $SrcColl.CollectionID |  Select-Object -Property ResourceID,Name,SiteCode | Out-GridView -OutputMode Multiple 
-    }
     else {
         $Systems = Get-CMDevice -CollectionID $SrcColl.CollectionID
 
-        if ( $Systems.count -gt 20 ) {
-            Write-Host @"
-Found more than $($Systems.Count) number of devices, 
-Choose the NUMBER Of machines to schedule for day.
+        if ( $Systems.count -gt 5 ) {
+
+            if ( $InputFile ) {
+                if ( get-item  $InputFile | ? Extension -eq '.txt' ) {
+                    $ComputerName = get-content  $InputFile
+                }
+                elseif ( get-item $InputFile | ? Extension -eq '.csv' ) {
+                    $ComputerName = Import-Csv -Path $InputFile | % ComputerName
+                }
+            }
+
+            if ( -not $COmputerName ) {
+                Clear-Host 
+                # $host.ui.RawUI.WindowTitle = "Import Computers"
+                Write-Host @"
+Found $($Systems.Count) number of devices, 
+If you already KNOW the machines, enter the names here:
+     (Leave Blank and Press Next to manually select the machines)
 
 "@
-            $NewLimit = Read-Host
-            $Systems = $Systems | Select-Object -First $NewLimit
+                [PowerShell_Wizard_Host.PSHostCallBack]::ForceMultilineOnReadLine(20)   # Hack
+
+                $ComputerName = ( Read-Host ).Trim("`r`n") -Split "`r`n" | ? { -not [string]::IsNullOrEmpty($_) } | %{  $_.Trim() }
+
+            }
+
+            if ( $ComputerName ) {
+                $ComputerName | Write-verbose 
+                Write-Host "Found [$($ComputerName.Count)]"
+
+                $Systems = $Systems | ? Name -In $ComputerName 
+            }
+
         }
-    }
 
-    Clear-Host
-    $host.ui.RawUI.WindowTitle = "Find Systems"
-    Write-Host "`r`nFound Systems  (Count: $($Systems.Count)):"
-    $Systems |  Select-Object -Property ResourceID,Name,SiteCode | Out-GridView
-    if ( $Limit -and $Systems.Count -gt $Limit ) {  Write-Host "{only first $Limit are shown}" }
+        if ( -not $COmputerName ) {
+            Clear-Host
+            $host.ui.RawUI.WindowTitle = "    Manual Selection"
+            Write-Host "Manual Selection of systems (use ctrl key to select more than one)"
+            $Systems = Get-CMDevice -CollectionID $SrcColl.CollectionID |  Select-Object -Property ResourceID,Name,SiteCode | Out-GridView -OutputMode Multiple 
+        }
 
-    if ( -not ( $TargetDay ) ) {
-        Wait-ForUserConfirmation
     }
 
     #endregion
+
+    #region Quick SubSystem confirmation 
+
+    Clear-Host
+    $host.ui.RawUI.WindowTitle = "SubSet of Systems"
+    Write-Host "`r`nFound Systems(Count: $($Systems.Count)):`r`rCONFIRM SYSTEMS"
+    $Systems |  Select-Object -Property ResourceID,Name,SiteCode | Out-GridView
+
+    Wait-ForUserConfirmation
+
+    #endregion 
 
     #region Date Selection 
 
@@ -149,11 +174,15 @@ Select the target Date for this batch of computers"
 "@
 
     if ( -not $TargetDay ) { 
-        [datetime]$TargetDay = 0..20 | %{ ([datetime]::Now).AddDays( $_ ) } | 
-            Test-ForBankersDays  | 
+        [datetime]$TargetDay = 1..16 | %{ ([datetime]::Now).AddDays( $_ ) } | 
+            # Test-ForBankersDays  | 
             %{ $_.ToString('D') } | 
             Out-GridView -OutputMode Single
 
+    }
+
+    if ( $TargetDay.Day -isnot [int] ) {
+        throw "Did not select a valid day"
     }
 
     $DateCOllection = "DAY_{0:d2}_8PM" -f $TargetDay.Day 
