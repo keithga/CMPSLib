@@ -1,7 +1,7 @@
 
 function Write-ToLog {
     [cmdletbinding()]
-    param( $Msg )
+    param( [parameter(Mandatory=$True, ValueFromPipeline=$true)] $Msg )
 
     process {
         $msg | Out-String  -Width 200 | write-Verbose

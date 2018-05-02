@@ -127,7 +127,7 @@ If this is not your approved Target Collection, exit now.
 
     }
     elseif ( $ComputerName ) {
-        $Systems = $ComputerName | %{ get-CMDeviceObject -Name $_ }
+        $Systems = $ComputerName | get-CMDeviceObject
     }
     else {
         throw "[10] No Computers found for addition!"
@@ -135,8 +135,8 @@ If this is not your approved Target Collection, exit now.
 
     Clear-Host 
     $host.ui.RawUI.WindowTitle = "Verify"
-    Write-Host "`r`nVERIFY!`r`n`r`nFound Systems  (Count: $($Systems.Count)):"
-    $Systems |  Select-Object -Property ResourceID,Name,SiteCode,ResourceType | Out-GridView
+    Write-Host "`r`nVERIFY!`r`n`r`nFound Systems  (Count: $($Systems.Count) - First 50):"
+    $Systems | Select-Object -Property ResourceID,Name,SiteCode,ResourceType -First 50 | Out-GridView
 
     #########################
     Write-Host "`r`nTarget [$target]:"

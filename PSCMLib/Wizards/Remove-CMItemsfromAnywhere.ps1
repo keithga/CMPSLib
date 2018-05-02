@@ -191,7 +191,7 @@ Start the installation from an existing collection
 
     }
     elseif ( $ComputerName ) {
-        $Systems = $ComputerName | % { Get-CMDeviceobject -Name $_ }
+        $Systems = $ComputerName | Get-CMDeviceobject
     }
     else {
         throw "[10] No Computers found for addition!"
@@ -200,7 +200,7 @@ Start the installation from an existing collection
     Clear-Host 
     $host.ui.RawUI.WindowTitle = "Verify"
     Write-Host "`r`nFound Systems  (Count: $($Systems.Count)):"
-    $Systems |  Select-Object -Property ResourceID,Name,SiteCode,ResourceType | Out-GridView
+    $Systems |  Select-Object -Property ResourceID,Name,SiteCode,ResourceType -First 50 | Out-GridView
 
     #########################
     Write-Host "`r`nSearch..."

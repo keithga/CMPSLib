@@ -4,13 +4,8 @@
     "\\BusinessQueries",
     "\\BusinessRules",
     "\\PSCMLib",
-    "\\PSCMLib\\BusinessRules",
-    "\\PSCMLib\\Common",
-    "\\PSCMLib\\SQLQuery",
-    "\\PSCMLib\\Wizards",
-    "\\Setup",
-    "\\Tests"
+    "\\Setup"
   ],
-  "SelectedNode": "\\BusinessRules\\step-Job6Cancel.ps1",
+  "SelectedNode": "\\PSCMLib",
   "PreviewInSolutionExplorer": false
 }
