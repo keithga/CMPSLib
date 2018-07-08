@@ -78,7 +78,7 @@ Function Add-CMDeviceToCollection {
         $InParams = $CollectionQuery.PSBase.GetMethodParameters('AddMembershipRules')
         Write-Verbose "Retrieving Class Object SMS_CollectionRuleDirect ..."
         $cls = Get-WmiObject @WMIArgs -Class SMS_CollectionRuleDirect -list -ErrorAction Stop
-        $Rules = @()
+        $Rules = New-Object System.Collections.Arraylist
 
         $MemberCount = Get-WmiObject @WMIArgs -Class SMS_Collection -ErrorAction Stop -Filter $Filter
         $MemberCount.Get()
@@ -94,7 +94,10 @@ Function Add-CMDeviceToCollection {
                 $NewRule.ResourceClassName = "SMS_R_System"
                 $NewRule.ResourceID = $sys.ResourceID
                 $NewRule.Rulename = $sys.Name
-                $Rules += $NewRule.psobject.BaseObject 
+                $Counter = $Rules.Add($NewRule.psobject.BaseObject)
+                if (($counter % 1000) -eq 0){
+                    Write-Verbose "Processing rule $counter of $($System.Count)"
+                }
             }
         }
     }
